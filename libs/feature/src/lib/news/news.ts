@@ -18,9 +18,7 @@ export class News implements OnInit {
 
   private logEffect = effect(() => {
     this.hitNew = this.motds()[0];
-    
-    console.log(this.motdsCarroussel());
-    //this.motds().shift();
+    this.motds().shift();
   });
 
   ngOnInit() {
