@@ -1,0 +1,8 @@
+
+@if (grouped.length) {
+  <div class="flex gap-2 items-center">
+    @for (group of grouped; track group) {
+      <iconify-icon [icon]="platformIcons[group]" [title]="group" width="20" height="20" class="w-8 h-6 text-grey-500"></iconify-icon>
+    }
+  </div>
+}

@@ -1,0 +1,148 @@
+<div class="py-8">
+
+  <!-- Botón de regreso -->
+  <button
+  (click)="goBack()"
+  class="mb-6 inline-flex items-center px-4 py-2  text-white font-semibold rounded-lg transition-colors">
+  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+  </svg>
+  Volver a Eventos
+</button>
+<!-- <pre>{{ windowDetails() | json }}</pre> -->
+ <!-- <pre>{{ windowResultsDetailsZero() | json }}</pre> -->
+<!--{{windowResultsDetailsZero()?.team?.[0]?.flag}} -->
+
+
+  @for(windowDetail of windowResultsDetails(); track windowDetail) {
+    <div class="rounded-2xl bg-secondary shadow-lg my-4 mx-2 p-6">
+      <iconify-icon
+        icon="tdesign:bookmark-checked-filled"
+        title="Ready or In Game"
+        width="20"
+        height="20"
+        class="text-grey-500">
+      </iconify-icon>
+      @for (team of windowDetail.team; track team.id) {
+        <div class="flex">
+
+          <span class="flex items-center mr-2">{{team.name}} </span>
+          <lib-flags [country]="team?.flag || ''"></lib-flags>
+
+        </div>
+
+      }
+    </div>
+  <!--  <p>{{ windowDetail.rank }} - {{ windowDetail.percentile }}</p> -->
+
+
+
+  }
+
+    <!-- Header del evento -->
+    <!-- <div class="bg-[#1a1a1a] rounded-2xl overflow-hidden shadow-lg mb-8">
+      <div class="bg-gradient-to-br from-yellow-400 to-orange-500 h-3 w-full"></div>
+
+      <div class="p-8">
+        <div class="grid md:grid-cols-3 gap-8">
+
+          <div class="md:col-span-1">
+            <img
+              [src]="getEventImage(event())"
+              [alt]="event()?.name_line1"
+              class="w-full h-64 object-cover rounded-lg"
+              [class.object-contain]="!event()?.poster && !event()?.tileImage && !event()?.loadingScreen"
+              [class.opacity-20]="!event()?.poster && !event()?.tileImage && !event()?.loadingScreen"
+            />
+          </div>
+
+
+          <div class="md:col-span-2">
+            <h1 class="text-4xl font-bold text-yellow-300 mb-4">{{ event()?.name_line1 }}</h1>
+            <h2 class="text-2xl font-semibold text-yellow-400 mb-3">{{ event()?.name_line2 }}</h2>
+
+            <p class="text-lg text-gray-300 mb-6">{{ event()?.long_description }}</p>
+
+            <div class="grid grid-cols-2 gap-4 mb-6">
+              <div>
+                <span class="text-gray-400 font-semibold">Región:</span>
+                <p class="text-white">{{ event()?.region }}</p>
+              </div>
+              <div>
+                <span class="text-gray-400 font-semibold">Horario:</span>
+                <p class="text-white">{{ event()?.schedule }}</p>
+              </div>
+              <div>
+                <span class="text-gray-400 font-semibold">Inicio:</span>
+                <p class="text-white">{{ event()?.beginTime | date:'mediumDate' }}</p>
+              </div>
+              <div>
+                <span class="text-gray-400 font-semibold">Fin:</span>
+                <p class="text-white">{{ event()?.endTime | date:'mediumDate' }}</p>
+              </div>
+            </div>
+
+            <div class="mb-6">
+              <span class="text-gray-400 font-semibold">Plataformas:</span>
+              <div class="mt-2">
+                <lib-platform-icons [platforms]="event()?.platforms || []"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="bg-[#1a1a1a] rounded-2xl overflow-hidden shadow-lg" *ngIf="event()?.windows?.length">
+      <div class="bg-gradient-to-br from-blue-400 to-purple-500 h-3 w-full"></div>
+
+      <div class="p-8">
+        <h3 class="text-2xl font-bold text-blue-300 mb-6">Ventanas de Participación</h3>
+
+        <div class="overflow-x-auto">
+          <table class="w-full border border-gray-700 text-sm">
+            <thead>
+              <tr class="bg-gray-800 text-gray-300">
+                <th class="px-4 py-3 text-left">Window ID</th>
+                <th class="px-4 py-3 text-left">Inicio</th>
+                <th class="px-4 py-3 text-left">Fin</th>
+                <th class="px-4 py-3 text-center">Estado</th>
+                <th class="px-4 py-3 text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let window of event()?.windows; trackBy: trackByWindowId"
+                class="border-t border-gray-700 text-gray-200 hover:bg-gray-800 transition-colors"
+                [class.opacity-50]="!hasFinishedWindowId(window.endTime)"
+                [class.cursor-pointer]="hasFinishedWindowId(window.endTime)"
+                [class.pointer-events-none]="!hasFinishedWindowId(window.endTime)"
+                (click)="hasFinishedWindowId(window.endTime) ? openWindowDetails(window) : null">
+                <td class="px-4 py-3 font-mono">{{ window.windowId }}</td>
+                <td class="px-4 py-3">{{ window.beginTime | date:'mediumDate' }}</td>
+                <td class="px-4 py-3">{{ window.endTime | date:'mediumDate' }}</td>
+                <td class="text-center py-3">
+                  <iconify-icon
+                    [icon]="hasFinishedWindowId(window.endTime) ? 'tdesign:bookmark-checked-filled' : 'tdesign:bookmark'"
+                    [title]="hasFinishedWindowId(window.endTime) ? 'Finalizado' : 'Listo o en juego'"
+                    width="20"
+                    height="20"
+                    class="w-6 h-6 text-gray-400">
+                  </iconify-icon>
+                </td>
+                <td class="text-center py-3">
+                  <button
+                    *ngIf="hasFinishedWindowId(window.endTime)"
+                    class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors">
+                    Ver Detalles
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div> -->
+
+</div>

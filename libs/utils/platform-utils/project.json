@@ -1,0 +1,9 @@
+{
+  "name": "groupsPlatforms",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/utils/platform-utils/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project groupsPlatforms --web",
+  "targets": {}
+}

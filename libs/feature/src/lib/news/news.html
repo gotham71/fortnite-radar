@@ -1,0 +1,52 @@
+@if(hitNew) {
+
+<div
+  class="relative bg-cover bg-center bg-no-repeat min-h-[60vh] flex items-center justify-center rounded-lg px-6 md:px-12 mb-6"
+  style="background-image: url({{hitNew.image}});">
+  <div class="bg-black bg-opacity-60 rounded-lg p-8 max-w-4xl text-center text-white drop-shadow-lg">
+    <h1 class="text-3xl md:text-5xl font-extrabold mb-4">{{hitNew.title}}</h1>
+    <p class="text-sm md:text-lg leading-relaxed">{{hitNew.body}}</p>
+  </div>
+</div>
+<!-- <div class="relative min-h-screen flex items-center justify-center px-6 md:px-12 mb-6 rounded-lg overflow-hidden">
+  <img [src]="motdsCarroussel()" alt="" class="absolute inset-0 w-full h-full object-contain">
+</div> -->
+<!-- <section class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 pb-4">
+  @for (motd of motds(); track motd.id) {
+  <article
+    class="animate-fadeInUp break-inside-avoid mb-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg overflow-hidden transition-shadow duration-300 cursor-pointer">
+    <img [src]="motd.tileImage" alt="{{ motd.title }}" class="w-full h-64 object-contain -mt-8">
+    <div class="p-6 -mt-6">
+      <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ motd.title }}</h2>
+      <p class="text-gray-700 leading-tight mb-4">
+        {{ motd.body }}
+      </p>
+    </div>
+  </article>
+  }
+</section> -->
+<section class="flex flex-col gap-6 pb-4">
+  @for (motd of motds(); track motd.id) {
+  <article class="animate-fadeInUp bg-white dark:bg-gray-900 rounded-2xl shadow-lg overflow-hidden
+             transition-shadow duration-300 cursor-pointer
+             flex flex-col sm:flex-row">
+
+    <!-- Imagen -->
+    <img [src]="motd.tileImage" alt="{{ motd.title }}" class="w-full h-64 object-contain
+               sm:w-64 sm:h-auto sm:object-cover">
+
+    <!-- Contenido -->
+    <div class="p-6 flex flex-col justify-center">
+      <h2 class="text-2xl font-bold text-gray-800 mb-2">
+        {{ motd.title }}
+      </h2>
+      <p class="text-gray-700 leading-tight">
+        {{ motd.body }}
+      </p>
+    </div>
+
+  </article>
+  }
+</section>
+
+}

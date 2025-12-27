@@ -14,7 +14,15 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@fortnite-radar/groupsPlatforms": [
+        "libs/utils/platform-utils/src/index.ts"
+      ],
+      "@fortnite-radar/models": ["libs/core/models/src/index.ts"],
+      "@fortnite-radar/news": ["libs/feature/src/index.ts"],
+      "@fortnite-radar/store": ["libs/core/data-access/store/src/index.ts"],
+      "@fortnite-radar/ui": ["libs/ui/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

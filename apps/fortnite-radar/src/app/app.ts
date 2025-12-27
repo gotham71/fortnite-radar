@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NxWelcome } from './nx-welcome';
+import { Header, Loading } from '@fortnite-radar/ui';
+
 
 @Component({
-  imports: [NxWelcome, RouterModule],
   selector: 'app-root',
   templateUrl: './app.html',
-  styleUrl: './app.scss',
+  styleUrls: ['./app.scss'],
+  standalone: true,
+  imports: [Header, Loading, RouterModule]
 })
 export class App {
   protected title = 'fortnite-radar';
