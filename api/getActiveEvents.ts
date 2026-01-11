@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import fetch from 'node-fetch';
 
 const API_KEY = process.env.FORTNITE_API_KEY;
-const BASE_URL = process.env.FORTNITE_API_URL;
+const BASE_URL = process.env.FORTNITE_API_URL_BASE;
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!API_KEY || !BASE_URL) {
