@@ -45,3 +45,6 @@ Thumbs.db
 
 .angular
 .env
+
+.vercel
+.env*.local

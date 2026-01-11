@@ -22,7 +22,7 @@ export class EventsStoreService {
   readonly eventRules = computed(() => this._eventRules());
   readonly eventLeaderboard = computed(() => this._eventLeaderboard());
   readonly windowDetails = computed(() => this._windowDetails());
-  readonly VERCEL_BASE_URL = 'https://fortnite-radar.vercel.app/api';
+  readonly VERCEL_BASE_URL = 'fortnite-radar-9dtqq7atq-jose-maria-ramirezs-projects.vercel.app/api';
   
   private withLoading<T>(obs$: Observable<T>): Observable<T> {
     this.isLoading.showLoading();
