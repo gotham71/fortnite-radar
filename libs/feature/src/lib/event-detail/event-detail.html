@@ -10,12 +10,14 @@
   Volver a Eventos
 </button>
 <!-- <pre>{{ windowDetails() | json }}</pre> -->
- <!-- <pre>{{ windowResultsDetailsZero() | json }}</pre> -->
-<!--{{windowResultsDetailsZero()?.team?.[0]?.flag}} -->
-
+<!-- <pre>{{ windowResultsDetails() | json }}</pre> -->
+<!--  {{windowResultsDetailsZero()?.team?.[0]?.flag}} -->
+<!-- <pre>{{windowResultsDetailsZero()?.team?.[0] | json}}</pre> -->
 
   @for(windowDetail of windowResultsDetails(); track windowDetail) {
     <div class="rounded-2xl bg-secondary shadow-lg my-4 mx-2 p-6">
+      <!-- <pre>{{windowDetails() | json}}</pre> -->
+      <!-- <pre>{{windowDetail | json}}</pre> -->
       <iconify-icon
         icon="tdesign:bookmark-checked-filled"
         title="Ready or In Game"
@@ -33,7 +35,7 @@
 
       }
     </div>
-  <!--  <p>{{ windowDetail.rank }} - {{ windowDetail.percentile }}</p> -->
+   <p>{{ windowDetail.rank }} - {{ windowDetail.pointsEarned }}</p>
 
 
 

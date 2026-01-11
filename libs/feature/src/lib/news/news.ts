@@ -13,7 +13,6 @@ import { NewsStoreService } from '@fortnite-radar/store';
 export class News implements OnInit {
   private newsStore = inject(NewsStoreService);
   readonly motds = this.newsStore.motds;
-  readonly motdsCarroussel = this.newsStore.motdsCarroussel;
   hitNew!: Motd;
 
   private logEffect = effect(() => {

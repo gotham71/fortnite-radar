@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { computed, inject, Injectable, signal } from "@angular/core";
-import { FortniteNewsResponse, Motd, SaveTheWorldNews } from "@fortnite-radar/models";
+import { FortniteNewsResponse, Motd } from "@fortnite-radar/models";
 import { finalize, Observable } from "rxjs";
 import { LoadingStoreService } from "./loading-store.service";
 
@@ -21,16 +21,6 @@ export class NewsStoreService {
   readonly motds = computed<Motd[]>(() => {
     const items = this.news()?.data.br.motds ?? [];
     return [...items].sort((a, b) => b.sortingPriority - a.sortingPriority);
-  });
-
-  readonly motdsData = computed<SaveTheWorldNews>(() => {
-    const motdsCarroussel = this.news()?.data?.stw ?? {date: '', messages: [], hash: ''};
-    return motdsCarroussel;
-  });
-
-  readonly motdsCarroussel = computed<string>(() => {
-    const motdsCarroussel = this.news()?.data?.br?.image ?? '';
-    return motdsCarroussel;
   });
 
   loadNews() {

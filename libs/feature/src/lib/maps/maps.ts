@@ -13,7 +13,8 @@ import { MapsService } from '@fortnite-radar/store';
 })
 export class Maps implements OnInit {
   mapUrl: string | null = null;
-  loading = true;
+  loadingMap = true;
+  loadingPois = true;
   pois: POI[] = [];
 
   private mapsService = inject(MapsService);
@@ -27,19 +28,25 @@ export class Maps implements OnInit {
         }
         this.mapUrl = url;
         this.cdr.markForCheck();
-        this.loading = false;
-        console.log("🚀 ~ maps ~ ngOnInit ~ this.mapUrl:", this.mapUrl)
+        this.loadingMap = false;
       },
       error: (error) => {
-        this.loading = false;
+        this.loadingMap = false;
         console.log(Error, error);
       }
     })
 
 
-    this.mapsService.getCurrentPOIsUsual().subscribe(pois => {
-      this.pois = pois;
-      this.cdr.markForCheck();
+    this.mapsService.getCurrentPOIsUsual().subscribe({
+      next: (pois) => {
+        this.pois = pois;
+        this.cdr.markForCheck();
+        this.loadingPois = false;
+      },
+      error: (error) => {
+        this.loadingPois = false;
+        console.log(Error, error);
+      }
     });
   }
 
