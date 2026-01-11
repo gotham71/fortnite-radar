@@ -7,8 +7,6 @@ import { LoadingStoreService } from "./loading-store.service";
 @Injectable({ providedIn: 'root' })
 export class EventsStoreService {
   private http = inject(HttpClient);
-  private readonly apiKey = "b7f7f8f6-200e4139-de07ae3d-78842206";
-  private readonly getEventsActiveUrl = 'https://fortniteapi.io/v1';
   private readonly _eventsActive = signal<TournamentResponse | null>(null);
   private readonly _allEvents = signal<TournamentResponse | null>(null);
   private readonly _eventDetails = signal<TournamentEntry | null>(null);
@@ -22,8 +20,7 @@ export class EventsStoreService {
   readonly eventRules = computed(() => this._eventRules());
   readonly eventLeaderboard = computed(() => this._eventLeaderboard());
   readonly windowDetails = computed(() => this._windowDetails());
-  readonly VERCEL_BASE_URL = 'fortnite-radar-9dtqq7atq-jose-maria-ramirezs-projects.vercel.app/api';
-  
+
   private withLoading<T>(obs$: Observable<T>): Observable<T> {
     this.isLoading.showLoading();
     return obs$.pipe(finalize(() => this.isLoading.hideLoading()));

@@ -6,7 +6,14 @@ const BASE_URL = process.env.FORTNITE_API_URL;
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!API_KEY || !BASE_URL) {
-    return res.status(500).json({ error: 'Missing API_KEY or BASE_URL' });
+    const missing = [];
+    if (!API_KEY) missing.push('FORTNITE_API_KEY');
+    if (!BASE_URL) missing.push('FORTNITE_API_URL');
+    return res.status(500).json({ 
+      error: 'Missing API_KEY or BASE_URL',
+      missing: missing,
+      message: `Missing environment variables: ${missing.join(', ')}. Please configure them in Vercel dashboard.`
+    });
   }
 
   try {
