@@ -4,10 +4,6 @@
   "outputDirectory": "dist/apps/fortnite-radar/browser",
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/apps/fortnite-radar/api/$1"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
