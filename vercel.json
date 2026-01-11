@@ -1,5 +1,5 @@
 {
   "framework": null,
   "buildCommand": "npm install && npx nx build fortnite-radar",
-  "outputDirectory": "dist/apps/fortnite-radar"
+  "outputDirectory": "dist/apps/fortnite-radar/browser"
 }
