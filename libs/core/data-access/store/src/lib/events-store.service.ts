@@ -22,7 +22,8 @@ export class EventsStoreService {
   readonly eventRules = computed(() => this._eventRules());
   readonly eventLeaderboard = computed(() => this._eventLeaderboard());
   readonly windowDetails = computed(() => this._windowDetails());
-
+  readonly VERCEL_BASE_URL = 'https://fortnite-radar.vercel.app/api';
+  
   private withLoading<T>(obs$: Observable<T>): Observable<T> {
     this.isLoading.showLoading();
     return obs$.pipe(finalize(() => this.isLoading.hideLoading()));
@@ -33,32 +34,24 @@ export class EventsStoreService {
     return items;
   });
 
+
   getAllEvents() {
-    this.withLoading(
-      this.http.get<TournamentResponse>(this.getEventsActiveUrl + '/events/list?language=en', {
-        headers: {
-          Authorization: this.apiKey
+    this.withLoading(this.http.get<TournamentResponse>(`${this.VERCEL_BASE_URL}/getAllEvents`))
+      .subscribe({
+        next: (response) => {
+          this._allEvents.set(response);
+        },
+        error: (error) => {
+          console.error('Failed to load All Events:', error);
+          this._allEvents.set(null);
         }
       })
-    ).subscribe({
-      next: (response) => {
-        this._allEvents.set(response);
-      },
-      error: (error) => {
-        console.error('Failed to load All Events:', error);
-        this._allEvents.set(null);
-      }
-    });
   }
 
-
   getActiveEvents() {
-    this.http.get<TournamentResponse>(this.getEventsActiveUrl + '/events/list/active?language=en', {
-      headers: {
-        Authorization: this.apiKey
-      }
-    }).subscribe({
-      next: (response) => {
+    this.withLoading(this.http.get<TournamentResponse>(`${this.VERCEL_BASE_URL}/getActiveEvents`))
+      .subscribe({
+        next: (response) => {
         this._eventsActive.set(response);
       },
       error: (error) => {
@@ -118,11 +111,7 @@ export class EventsStoreService {
 
   getWindowDetailsById(windowId: string) {
     this.withLoading(
-      this.http.get<TournamentWindowResponse>(this.getEventsActiveUrl + `/events/window?windowId=${windowId}`, {
-        headers: {
-          Authorization: this.apiKey
-        }
-      })
+      this.http.get<TournamentWindowResponse>(`${this.VERCEL_BASE_URL}/getWindowDetailsById?windowId=${windowId}`)
     ).subscribe({
       next: (response) => {
         this._windowDetails.set(response);
