@@ -36,9 +36,11 @@ export class EventsStoreService {
 
 
   getAllEvents() {
-    this.withLoading(this.http.get<TournamentResponse>(`${this.VERCEL_BASE_URL}/getAllEvents`))
+    console.log('getAllEvents');
+    this.withLoading(this.http.get<TournamentResponse>(`/api/getAllEvents`))
       .subscribe({
         next: (response) => {
+          console.log('response: ', response);
           this._allEvents.set(response);
         },
         error: (error) => {
@@ -49,7 +51,7 @@ export class EventsStoreService {
   }
 
   getActiveEvents() {
-    this.withLoading(this.http.get<TournamentResponse>(`${this.VERCEL_BASE_URL}/getActiveEvents`))
+    this.withLoading(this.http.get<TournamentResponse>(`/api/getActiveEvents`))
       .subscribe({
         next: (response) => {
         this._eventsActive.set(response);
@@ -111,7 +113,7 @@ export class EventsStoreService {
 
   getWindowDetailsById(windowId: string) {
     this.withLoading(
-      this.http.get<TournamentWindowResponse>(`${this.VERCEL_BASE_URL}/getWindowDetailsById?windowId=${windowId}`)
+      this.http.get<TournamentWindowResponse>(`/api/getWindowDetailsById?windowId=${windowId}`)
     ).subscribe({
       next: (response) => {
         this._windowDetails.set(response);
