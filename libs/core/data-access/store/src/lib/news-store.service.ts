@@ -7,7 +7,6 @@ import { LoadingStoreService } from "./loading-store.service";
 @Injectable({ providedIn: 'root' })
 export class NewsStoreService {
   private http = inject(HttpClient);
-  private readonly getNewsUrl = 'https://fortnite-api.com/v2/news?language=en';
   private readonly _news = signal<FortniteNewsResponse | null>(null);
   readonly news = computed(() => this._news());
 
@@ -23,10 +22,10 @@ export class NewsStoreService {
     return [...items].sort((a, b) => b.sortingPriority - a.sortingPriority);
   });
 
-  loadNews() {
+  getNewsList() {
     this.withLoading(
-      this.http.get<FortniteNewsResponse>(this.getNewsUrl)
-    ).subscribe({
+      this.http.get<FortniteNewsResponse>(`/api/getNews`))
+      .subscribe({
         next: (response) => {
           this._news.set(response);
         },

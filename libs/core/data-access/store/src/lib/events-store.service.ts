@@ -33,11 +33,9 @@ export class EventsStoreService {
 
 
   getAllEvents() {
-    console.log('getAllEvents');
     this.withLoading(this.http.get<TournamentResponse>(`/api/getAllEvents`))
       .subscribe({
         next: (response) => {
-          console.log('response: ', response);
           this._allEvents.set(response);
         },
         error: (error) => {

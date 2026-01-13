@@ -18,7 +18,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const response = await fetch(`${BASE_URL}/v1/events/list/active?language=en`, {
+    const response = await fetch(`${BASE_URL}/v2/news?language=en`, {
       headers: { Authorization: API_KEY },
     });
     const data = await response.json();
@@ -28,4 +28,3 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     res.status(500).json({ error: 'Failed to fetch active events' });
   }
 }
-

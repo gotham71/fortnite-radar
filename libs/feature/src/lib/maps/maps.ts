@@ -35,19 +35,7 @@ export class Maps implements OnInit {
         console.log(Error, error);
       }
     })
-
-
-    this.mapsService.getCurrentPOIsUsual().subscribe({
-      next: (pois) => {
-        this.pois = pois;
-        this.cdr.markForCheck();
-        this.loadingPois = false;
-      },
-      error: (error) => {
-        this.loadingPois = false;
-        console.log(Error, error);
-      }
-    });
+    this.mapsService.getCurrentPOIsUsual();
   }
 
 }

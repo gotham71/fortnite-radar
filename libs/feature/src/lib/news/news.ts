@@ -21,6 +21,6 @@ export class News implements OnInit {
   });
 
   ngOnInit() {
-    this.newsStore.loadNews();
+    this.newsStore.getNewsList();
   }
 }

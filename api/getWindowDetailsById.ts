@@ -12,7 +12,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (!API_KEY || !BASE_URL) {
-    const missing = [];
+    const missing: string[] = [];
+
     if (!API_KEY) missing.push('FORTNITE_API_KEY');
     if (!BASE_URL) missing.push('FORTNITE_API_URL_BASE');
     return res.status(500).json({
