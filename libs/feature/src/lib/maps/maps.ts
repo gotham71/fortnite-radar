@@ -21,6 +21,7 @@ export class Maps implements OnInit {
 
   constructor() {
     effect(() => {
+      console.log("🚀 ~ Maps ~ constructor ~ this.pois():", this.pois())
       const poisValue = this.pois();
       if (poisValue.length > 0) {
         this.loadingPois = false;
