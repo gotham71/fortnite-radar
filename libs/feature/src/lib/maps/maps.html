@@ -23,12 +23,12 @@
   <aside id="pois"
     class="relative flex flex-col text-center items-center justify-center  min-h-96 mt-4 w-full lg:flex-[1] px-6 mb-6">
     <h1 class="poi-title text-fourth text-4xl font-bold mt-8 mb-4">POIs</h1>
-    @if(pois) {
-    @for(poi of pois; track poi) {
+    @if(pois().length > 0) {
+    @for(poi of pois(); track poi.id) {
     <p class="poi">{{poi.name}}</p>
     }
     }
-    @if(!pois && !loadingPois) {
+    @if(pois().length === 0 && !loadingPois) {
     <p class="poi">No POIs found</p>
     }
     @if(loadingPois) {

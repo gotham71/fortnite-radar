@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
-import { POI } from '@fortnite-radar/models';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, inject, OnInit } from '@angular/core';
 import { MapsService } from '@fortnite-radar/store';
 
 @Component({
@@ -18,7 +17,20 @@ export class Maps implements OnInit {
   mapUrl: string | null = null;
   loadingMap = true;
   loadingPois = true;
-  pois: POI[] = this.mapsService.pois();
+  readonly pois = this.mapsService.pois;
+
+  constructor() {
+    effect(() => {
+      const poisValue = this.pois();
+      if (poisValue.length > 0) {
+        this.loadingPois = false;
+        this.cdr.markForCheck();
+      } else if (!this.loadingPois && poisValue.length === 0) {
+        // Si ya no está cargando y no hay POIs, podría ser un error o simplemente no hay datos
+        this.cdr.markForCheck();
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.mapsService.getCurrentMap().subscribe({
@@ -33,9 +45,19 @@ export class Maps implements OnInit {
       error: (error) => {
         this.loadingMap = false;
         console.log(Error, error);
+        this.cdr.markForCheck();
       }
     })
+
     this.mapsService.getCurrentPOIsUsual();
+
+    // Timeout para desactivar el loading si la petición tarda demasiado
+    setTimeout(() => {
+      if (this.loadingPois) {
+        this.loadingPois = false;
+        this.cdr.markForCheck();
+      }
+    }, 10000); // 10 segundos
   }
 
 }
