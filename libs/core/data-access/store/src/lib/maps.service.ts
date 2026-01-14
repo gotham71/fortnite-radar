@@ -21,24 +21,19 @@ export class MapsService {
     .subscribe({
       next: (response) => {
         console.log('POIs response:', response);
-        // La API puede devolver los datos directamente o dentro de un objeto data
+        // La API devuelve los POIs en la propiedad "list"
         let poisArray: POI[] = [];
         if (Array.isArray(response)) {
           poisArray = response;
+        } else if (response?.list && Array.isArray(response.list)) {
+          poisArray = response.list;
         } else if (response?.data) {
           if (Array.isArray(response.data)) {
             poisArray = response.data;
+          } else if (response.data?.list && Array.isArray(response.data.list)) {
+            poisArray = response.data.list;
           } else if (response.data?.pois && Array.isArray(response.data.pois)) {
             poisArray = response.data.pois;
-          } else if (typeof response.data === 'object') {
-            // Intentar extraer POIs de cualquier propiedad del objeto data
-            const dataKeys = Object.keys(response.data);
-            for (const key of dataKeys) {
-              if (Array.isArray(response.data[key])) {
-                poisArray = response.data[key];
-                break;
-              }
-            }
           }
         }
         console.log('POIs extracted:', poisArray);
