@@ -12,13 +12,13 @@ import { MapsService } from '@fortnite-radar/store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Maps implements OnInit {
+  private mapsService = inject(MapsService);
+  private cdr = inject(ChangeDetectorRef);
+
   mapUrl: string | null = null;
   loadingMap = true;
   loadingPois = true;
-  pois: POI[] = [];
-
-  private mapsService = inject(MapsService);
-  private cdr = inject(ChangeDetectorRef);
+  pois: POI[] = this.mapsService.pois();
 
   ngOnInit(): void {
     this.mapsService.getCurrentMap().subscribe({
