@@ -1,93 +1,59 @@
-
 <section class="py-12">
   <h2 class="text-4xl font-extrabold mb-10 text-center text-yellow-400">🏆 Fortnite Events</h2>
 
-  <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 hidden">
-    @for (event of events(); track event.id) {
-      <div class="bg-[#1a1a1a] animate-fadeInUp rounded-2xl overflow-hidden shadow-lg hover:scale-105 transition-transform">
-        <div class="bg-gradient-to-br from-yellow-400 to-orange-500 h-2 w-full"></div>
-
-        <div class="p-6">
-          <h3 class="text-2xl font-bold text-yellow-300 mb-2">{{ event.name_line2 }}</h3>
-          <p class="text-sm text-gray-300 italic mb-2">{{ event.short_description }}</p>
-
-          <div class="text-sm text-gray-400 mb-4">
-            <p>{{event.long_description}}</p>
-            <p><strong>Region:</strong> {{ event.region }}</p>
-            <p><strong>Schedule:</strong> {{ event.schedule }}</p>
-            <p><strong>From:</strong> {{ event.beginTime | date:'mediumDate' }}</p>
-            <p><strong>To:</strong> {{ event.endTime | date:'mediumDate' }}</p>
-          </div>
-          <lib-platform-icons [platforms]="event.platforms"/>
-          <button class="mt-4 inline-block px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg">
-            Ver Detalles
-          </button>
-        </div>
-      </div>
-    }
-  </div>
   @for (event of events(); track event.id) {
-    <div class="w-full shadow-lg rounded-2xl overflow-hidden flex mb-6 bg-secondary text-white">
-      <div class="w-1/4 flex items-center justify-center">
-        <img
-          [src]="getEventImage(event)"
-          alt="Event Image"
-          class="object-cover"
-          [class.object-contain]="!event.poster && !event.tileImage && !event.loadingScreen"
-          [class.opacity-20]="!event.poster && !event.tileImage && !event.loadingScreen"
-        />
-      </div>
-      <div class="w-3/4 p-6 flex flex-col">
-        <div class="mb-4">
-          <h2 class="text-xl font-bold text-accent">{{ event.name_line1 }}</h2>
-          <p class="">@if (event.name_line2) {<span>{{ event.name_line2 }} · </span>}Region: {{ event.region }}</p>
-          <p class="text-sm">{{ event.beginTime | date:"d MMMM y" }} - {{ event.endTime | date:"d MMMM y" }}</p>
-          <p class="text-sm my-3"><lib-platform-icons [platforms]="event.platforms"/></p>
-        </div>
-
-        <p class="text-sm mb-4 line-clamp-3">{{ event.long_description }}</p>
-        @if (event.windows.length) {
-
-          <div class="overflow-x-auto">
-            <table class="w-full border broder-gray-200 text-sm">
-              <thead>
-                <tr class="bg-gray-100 text-gray-500">
-                  <th class="px-2 py-1 text-left">Window</th>
-                  <th class="px-2 py-1 text-left">Start</th>
-                  <th class="px-2 py-1 text-left">End</th>
-                  <th class="px-2 py-1 text-center">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (window of event.windows; track window.windowId) {
-                  <tr
-                    class="border-t text-gray-200 cursor-pointer"
-                    [class.opacity-50]="!hasFinishedWindowId(window.endTime)"
-                    [attr.aria-disabled]="!hasFinishedWindowId(window.endTime) ? 'true' : null"
-                    [attr.tabindex]="!hasFinishedWindowId(window.endTime) ? '-1' : '0'"
-                    [class.pointer-events-none]="!hasFinishedWindowId(window.endTime)"
-                    (click)="hasFinishedWindowId(window.endTime) ? openEventDetail(window.windowId) : null"
-                  >
-                    <td class="px-2 py-1">{{ window.windowId }}</td>
-                    <td class="px-2 py-1">{{ window.beginTime | date:"d MMMM y" }}</td>
-                    <td class="px-2 py-1">{{ window.endTime | date:"d MMMM y" }}</td>
-                    <td class="text-center py-1">
-                      <iconify-icon
-                        [icon]="hasFinishedWindowId(window.endTime) ? 'tdesign:bookmark-checked-filled' : 'tdesign:bookmark'"
-                        [title]="hasFinishedWindowId(window.endTime) ? 'Finished' : 'Ready or In Game'"
-                        width="20"
-                        height="20"
-                        class="w-8 h-6 text-grey-500">
-                      </iconify-icon>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-
-            </table>
-          </div>
-        }
-      </div>
+  <div class="w-full shadow-lg rounded-2xl overflow-hidden flex flex-col lg:flex-row mb-6 bg-secondary text-white">
+    <div class="w-full lg:w-1/4 h-64 lg:h-auto flex items-center justify-center bg-black/10">
+      <img [src]="getEventImage(event)" alt="Event Image" class="w-full h-full sm:object-contain object-cover"
+        [class.object-contain]="!event.poster && !event.tileImage && !event.loadingScreen"
+        [class.opacity-20]="!event.poster && !event.tileImage && !event.loadingScreen" />
     </div>
+    <div class="w-full lg:w-3/4 p-6 flex flex-col">
+      <div class="mb-4">
+        <h2 class="text-xl font-bold text-accent">{{ event.name_line1 }}</h2>
+        <p class="">@if (event.name_line2) {<span>{{ event.name_line2 }} · </span>}Region: {{ event.region }}</p>
+        <p class="text-sm">{{ event.beginTime | date:"d MMMM y" }} - {{ event.endTime | date:"d MMMM y" }}</p>
+        <p class="text-sm my-3"><lib-platform-icons [platforms]="event.platforms" /></p>
+      </div>
+
+      <p class="text-sm mb-4 line-clamp-3">{{ event.long_description }}</p>
+      @if (event.windows.length) {
+
+      <div class="overflow-x-auto">
+        <table class="w-full border broder-gray-200 text-sm">
+          <thead>
+            <tr class="bg-gray-100 text-gray-500">
+              <th class="px-2 py-1 text-left">Window</th>
+              <th class="px-2 py-1 text-left">Start</th>
+
+              <th class="px-2 py-1 text-center">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (window of event.windows; track window.windowId) {
+            <tr class="border-t text-gray-200 cursor-pointer" [class.opacity-50]="!hasFinishedWindowId(window.endTime)"
+              [attr.aria-disabled]="!hasFinishedWindowId(window.endTime) ? 'true' : null"
+              [attr.tabindex]="!hasFinishedWindowId(window.endTime) ? '-1' : '0'"
+              [class.pointer-events-none]="!hasFinishedWindowId(window.endTime)"
+              (click)="hasFinishedWindowId(window.endTime) ? openEventDetail(window.windowId) : null">
+              <td class="px-2 py-1">{{ window.windowId }}</td>
+              <td class="px-2 py-1">{{ window.beginTime | date:"d MMMM y" }}</td>
+
+              <td class="text-center py-1">
+                <iconify-icon
+                  [icon]="hasFinishedWindowId(window.endTime) ? 'tdesign:bookmark-checked-filled' : 'tdesign:bookmark'"
+                  [title]="hasFinishedWindowId(window.endTime) ? 'Finished' : 'Ready or In Game'" width="20" height="20"
+                  class="w-8 h-6 text-grey-500">
+                </iconify-icon>
+              </td>
+            </tr>
+            }
+          </tbody>
+
+        </table>
+      </div>
+      }
+    </div>
+  </div>
   }
 </section>

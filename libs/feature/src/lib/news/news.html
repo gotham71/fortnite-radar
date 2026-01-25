@@ -12,11 +12,11 @@
   @for (motd of motds(); track motd.id) {
   <article class="animate-fadeInUp bg-white dark:bg-gray-900 rounded-2xl shadow-lg overflow-hidden
              transition-shadow duration-300
-             flex flex-col sm:flex-row">
+             flex flex-col lg:flex-row">
 
     <!-- Imagen -->
-    <img [src]="motd.tileImage" alt="{{ motd.title }}" class="w-full h-64 lg:object-contain
-               sm:w-64 sm:h-auto">
+    <img [src]="motd.tileImage" alt="{{ motd.title }}" class="w-full h-64 lg:object-cover
+               lg:w-64 lg:h-auto">
 
     <!-- Contenido -->
     <div class="p-6 flex flex-col justify-center">

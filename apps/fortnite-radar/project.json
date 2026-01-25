@@ -55,7 +55,8 @@
           "buildTarget": "fortnite-radar:build:production"
         },
         "development": {
-          "buildTarget": "fortnite-radar:build:development"
+          "buildTarget": "fortnite-radar:build:development",
+          "proxyConfig": "proxy.conf.json"
         }
       },
       "defaultConfiguration": "development"
