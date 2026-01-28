@@ -15,43 +15,42 @@
         <p class="text-sm">{{ event.beginTime | date:"d MMMM y" }} - {{ event.endTime | date:"d MMMM y" }}</p>
         <p class="text-sm my-3"><lib-platform-icons [platforms]="event.platforms" /></p>
       </div>
-
-      <p class="text-sm mb-4 line-clamp-3">{{ event.long_description }}</p>
+      @if (event.long_description) {
+        <p class="text-sm mb-4 line-clamp-3">{{ event.long_description }}</p>
+      }
       @if (event.windows.length) {
-
-      <div class="overflow-x-auto">
-        <table class="w-full border broder-gray-200 text-sm">
-          <thead>
-            <tr class="bg-gray-100 text-gray-500">
-              <th class="px-2 py-1 text-left">Window</th>
-              <th class="px-2 py-1 text-left">Start</th>
-
-              <th class="px-2 py-1 text-center">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (window of event.windows; track window.windowId) {
-            <tr class="border-t text-gray-200 cursor-pointer" [class.opacity-50]="!hasFinishedWindowId(window.endTime)"
-              [attr.aria-disabled]="!hasFinishedWindowId(window.endTime) ? 'true' : null"
-              [attr.tabindex]="!hasFinishedWindowId(window.endTime) ? '-1' : '0'"
-              [class.pointer-events-none]="!hasFinishedWindowId(window.endTime)"
-              (click)="hasFinishedWindowId(window.endTime) ? openEventDetail(window.windowId) : null">
-              <td class="px-2 py-1">{{ window.windowId }}</td>
-              <td class="px-2 py-1">{{ window.beginTime | date:"d MMMM y" }}</td>
-
-              <td class="text-center py-1">
-                <iconify-icon
-                  [icon]="hasFinishedWindowId(window.endTime) ? 'tdesign:bookmark-checked-filled' : 'tdesign:bookmark'"
-                  [title]="hasFinishedWindowId(window.endTime) ? 'Finished' : 'Ready or In Game'" width="20" height="20"
-                  class="w-8 h-6 text-grey-500">
-                </iconify-icon>
-              </td>
-            </tr>
-            }
-          </tbody>
-
-        </table>
-      </div>
+        <div class="overflow-x-auto">
+          <table class="w-full border broder-gray-200 text-sm">
+            <thead>
+              <tr class="bg-gray-100 text-gray-500">
+                <th class="px-2 py-1 text-left">Window</th>
+                <th class="px-2 py-1 text-left">Start</th>
+                <th class="px-2 py-1 text-center">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (window of event.windows; track window.windowId) {
+              <tr class="border-t text-gray-200 cursor-pointer" [class.opacity-50]="!hasFinishedWindowId(window.endTime)"
+                [attr.aria-disabled]="!hasFinishedWindowId(window.endTime) ? 'true' : null"
+                [attr.tabindex]="!hasFinishedWindowId(window.endTime) ? '-1' : '0'"
+                [class.pointer-events-none]="!hasFinishedWindowId(window.endTime)"
+                (click)="hasFinishedWindowId(window.endTime) ? openEventDetail(window.windowId) : null">
+                <td class="px-2 py-1">{{ window.windowId }}</td>
+                <td class="px-2 py-1">{{ window.beginTime | date:"d MMMM y" }}</td>
+                <td class="text-center py-1">
+                  <iconify-icon
+                    [icon]="hasFinishedWindowId(window.endTime) ? 'tdesign:bookmark-checked-filled' : 'tdesign:bookmark'"
+                    [title]="hasFinishedWindowId(window.endTime) ? 'Finished' : 'Ready or In Game'" width="20" height="20"
+                    class="w-8 h-6 text-grey-500">
+                  </iconify-icon>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }@else {
+        <p class="text-md text-center">No windows available</p>
       }
     </div>
   </div>

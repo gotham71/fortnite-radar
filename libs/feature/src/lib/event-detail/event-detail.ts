@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, CUSTOM_ELEMENTS_SCHEMA, effect, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, CUSTOM_ELEMENTS_SCHEMA, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TeamInfo } from '@fortnite-radar/models';
 import { EventsStoreService } from '@fortnite-radar/store';
@@ -18,12 +18,19 @@ export class EventDetail implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
+  readonly expandedRank = signal<number | null>(null);
+
   readonly windowDetails = computed(() => {
     return this.eventsStore.windowDetails()?.session;
   });
 
+  readonly scoringRules = computed(() => this.windowDetails()?.rules?.scoring ?? []);
+  readonly tieRules = computed(() => this.windowDetails()?.rules?.tie?.components ?? []);
+  readonly payoutRanks = computed(() => this.windowDetails()?.payout?.ranks ?? []);
+
   readonly windowResultsDetails = computed(() => {
-    return this.eventsStore.windowDetails()?.session?.results.map(result => {
+    const results = this.eventsStore.windowDetails()?.session?.results ?? [];
+    return results.map(result => {
       return {
         eventId: result.eventId,
         eventWindowId: result.eventWindowId,
@@ -41,25 +48,9 @@ export class EventDetail implements OnInit, OnDestroy {
     });
   });
 
-  readonly windowResultsDetailsZero = computed(() => {
-    const session = this.eventsStore.windowDetails()?.session;
-    if (!session || !session.results?.length) return null;
-    const result = session.results[0];
-
-      return {
-        eventId: result.eventId,
-        eventWindowId: result.eventWindowId,
-        team: result.teamAccountNames.map((player: TeamInfo) => ({
-          id: player.id,
-          name: player.name,
-          flag: result.playerFlagTokens[player.id] ?? null
-        })),
-        pointsEarned: result.pointsEarned,
-        score: result.score,
-        rank: result.rank,
-        percentile: result.percentile
-      };
-
+  readonly sortedResults = computed(() => {
+    const list = this.windowResultsDetails() ?? [];
+    return [...list].sort((a, b) => a.rank - b.rank);
   });
 
   readonly windowId = computed(() => {
@@ -71,7 +62,7 @@ export class EventDetail implements OnInit, OnDestroy {
   private logEffect = effect(() => {
     console.log("📅 Window id:", this.windowId());
     console.log("📅 Window details:", this.windowDetails());
-    console.log("📅 Window Results details:", this.windowResultsDetailsZero());
+    console.log("📅 Window results (sorted):", this.sortedResults());
   });
 
   ngOnInit() {
@@ -83,6 +74,17 @@ export class EventDetail implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.logEffect.destroy();
+  }
+
+  toggleRank(rank: number) {
+    this.expandedRank.update((current) => (current === rank ? null : rank));
+  }
+
+  breakdownEntries(breakdown: Record<string, { timesAchieved: number; pointsEarned: number }> | null | undefined) {
+    if (!breakdown) return [];
+    return Object.entries(breakdown)
+      .map(([key, value]) => ({ key, ...value }))
+      .sort((a, b) => b.pointsEarned - a.pointsEarned);
   }
 
   getEventImage(event: any): string {

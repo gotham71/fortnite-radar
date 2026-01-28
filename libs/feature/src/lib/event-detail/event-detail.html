@@ -9,142 +9,186 @@
   </svg>
   Back to Events
 </button>
-<!-- <pre>{{ windowDetails() | json }}</pre> -->
-<!-- <pre>{{ windowResultsDetails() | json }}</pre> -->
-<!--  {{windowResultsDetailsZero()?.team?.[0]?.flag}} -->
-<!-- <pre>{{windowResultsDetailsZero()?.team?.[0] | json}}</pre> -->
-
-  @for(windowDetail of windowResultsDetails(); track windowDetail) {
-    <div class="rounded-2xl bg-secondary shadow-lg my-4 mx-2 p-6">
-      <!-- <pre>{{windowDetails() | json}}</pre> -->
-      <!-- <pre>{{windowDetail | json}}</pre> -->
-      <iconify-icon
-        icon="tdesign:bookmark-checked-filled"
-        title="Ready or In Game"
-        width="20"
-        height="20"
-        class="text-grey-500">
-      </iconify-icon>
-      @for (team of windowDetail.team; track team.id) {
-        <div class="flex">
-
-          <span class="flex items-center mr-2">{{team.name}} </span>
-          <lib-flags [country]="team?.flag || ''"></lib-flags>
-
+  @if (windowDetails(); as session) {
+    <!-- Header de la ventana -->
+    <div class="rounded-2xl bg-secondary shadow-lg my-4 mx-2 p-6 text-white">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-extrabold text-accent">
+            {{ session.eventDisplayId }} · {{ session.region }}
+          </h1>
+          <p class="text-sm opacity-90">
+            Window: <span class="font-mono">{{ session.windowId }}</span>
+          </p>
+          <p class="text-sm opacity-90">
+            {{ session.beginTime | date:"d MMMM y, HH:mm" }} - {{ session.endTime | date:"d MMMM y, HH:mm" }}
+          </p>
         </div>
 
-      }
-    </div>
-   <!-- <p>{{ windowDetail.rank }} - {{ windowDetail.pointsEarned }}</p> -->
-
-
-
-  }
-
-    <!-- Header del evento -->
-    <!-- <div class="bg-[#1a1a1a] rounded-2xl overflow-hidden shadow-lg mb-8">
-      <div class="bg-gradient-to-br from-yellow-400 to-orange-500 h-3 w-full"></div>
-
-      <div class="p-8">
-        <div class="grid md:grid-cols-3 gap-8">
-
-          <div class="md:col-span-1">
-            <img
-              [src]="getEventImage(event())"
-              [alt]="event()?.name_line1"
-              class="w-full h-64 object-cover rounded-lg"
-              [class.object-contain]="!event()?.poster && !event()?.tileImage && !event()?.loadingScreen"
-              [class.opacity-20]="!event()?.poster && !event()?.tileImage && !event()?.loadingScreen"
-            />
-          </div>
-
-
-          <div class="md:col-span-2">
-            <h1 class="text-4xl font-bold text-yellow-300 mb-4">{{ event()?.name_line1 }}</h1>
-            <h2 class="text-2xl font-semibold text-yellow-400 mb-3">{{ event()?.name_line2 }}</h2>
-
-            <p class="text-lg text-gray-300 mb-6">{{ event()?.long_description }}</p>
-
-            <div class="grid grid-cols-2 gap-4 mb-6">
-              <div>
-                <span class="text-gray-400 font-semibold">Región:</span>
-                <p class="text-white">{{ event()?.region }}</p>
-              </div>
-              <div>
-                <span class="text-gray-400 font-semibold">Horario:</span>
-                <p class="text-white">{{ event()?.schedule }}</p>
-              </div>
-              <div>
-                <span class="text-gray-400 font-semibold">Inicio:</span>
-                <p class="text-white">{{ event()?.beginTime | date:'mediumDate' }}</p>
-              </div>
-              <div>
-                <span class="text-gray-400 font-semibold">Fin:</span>
-                <p class="text-white">{{ event()?.endTime | date:'mediumDate' }}</p>
-              </div>
-            </div>
-
-            <div class="mb-6">
-              <span class="text-gray-400 font-semibold">Plataformas:</span>
-              <div class="mt-2">
-                <lib-platform-icons [platforms]="event()?.platforms || []"/>
-              </div>
-            </div>
-          </div>
+        <div class="flex flex-wrap gap-3 items-center justify-start md:justify-end">
+          <span class="px-3 py-1 rounded-full text-xs font-semibold bg-black/20">
+            Match cap: {{ session.matchCap }}
+          </span>
+          <span class="px-3 py-1 rounded-full text-xs font-semibold bg-black/20">
+            {{ session.useIndividualScores ? 'Individual scores' : 'Team scores' }}
+          </span>
+          <span class="px-3 py-1 rounded-full text-xs font-semibold"
+                [class.bg-green-600]="session.finished"
+                [class.bg-yellow-600]="!session.finished">
+            {{ session.finished ? 'Finished' : 'Ready / In progress' }}
+          </span>
         </div>
       </div>
     </div>
 
+    <!-- Leaderboard -->
+    <div class="rounded-2xl bg-secondary shadow-lg my-4 mx-2 p-6 text-white">
+      <h2 class="text-xl font-bold mb-4">Leaderboard</h2>
 
-    <div class="bg-[#1a1a1a] rounded-2xl overflow-hidden shadow-lg" *ngIf="event()?.windows?.length">
-      <div class="bg-gradient-to-br from-blue-400 to-purple-500 h-3 w-full"></div>
-
-      <div class="p-8">
-        <h3 class="text-2xl font-bold text-blue-300 mb-6">Ventanas de Participación</h3>
-
+      @if (sortedResults().length) {
         <div class="overflow-x-auto">
-          <table class="w-full border border-gray-700 text-sm">
+          <table class="w-full text-sm">
             <thead>
-              <tr class="bg-gray-800 text-gray-300">
-                <th class="px-4 py-3 text-left">Window ID</th>
-                <th class="px-4 py-3 text-left">Inicio</th>
-                <th class="px-4 py-3 text-left">Fin</th>
-                <th class="px-4 py-3 text-center">Estado</th>
-                <th class="px-4 py-3 text-center">Acciones</th>
+              <tr class="text-left opacity-80 border-b border-white/10">
+                <th class="py-2 pr-4">Rank</th>
+                <th class="py-2 pr-4">Team</th>
+                <th class="py-2 pr-4">Points</th>
+                <th class="py-2 pr-4">Score</th>
+                <th class="py-2 pr-4">Percentile</th>
+                <th class="py-2 pr-0">Breakdown</th>
               </tr>
             </thead>
             <tbody>
-              <tr
-                *ngFor="let window of event()?.windows; trackBy: trackByWindowId"
-                class="border-t border-gray-700 text-gray-200 hover:bg-gray-800 transition-colors"
-                [class.opacity-50]="!hasFinishedWindowId(window.endTime)"
-                [class.cursor-pointer]="hasFinishedWindowId(window.endTime)"
-                [class.pointer-events-none]="!hasFinishedWindowId(window.endTime)"
-                (click)="hasFinishedWindowId(window.endTime) ? openWindowDetails(window) : null">
-                <td class="px-4 py-3 font-mono">{{ window.windowId }}</td>
-                <td class="px-4 py-3">{{ window.beginTime | date:'mediumDate' }}</td>
-                <td class="px-4 py-3">{{ window.endTime | date:'mediumDate' }}</td>
-                <td class="text-center py-3">
-                  <iconify-icon
-                    [icon]="hasFinishedWindowId(window.endTime) ? 'tdesign:bookmark-checked-filled' : 'tdesign:bookmark'"
-                    [title]="hasFinishedWindowId(window.endTime) ? 'Finalizado' : 'Listo o en juego'"
-                    width="20"
-                    height="20"
-                    class="w-6 h-6 text-gray-400">
-                  </iconify-icon>
-                </td>
-                <td class="text-center py-3">
-                  <button
-                    *ngIf="hasFinishedWindowId(window.endTime)"
-                    class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors">
-                    Ver Detalles
-                  </button>
-                </td>
+              @for (row of sortedResults(); track row.rank) {
+                <tr class="border-b border-white/5 align-top">
+                  <td class="py-3 pr-4 font-mono font-semibold">#{{ row.rank }}</td>
+
+                  <td class="py-3 pr-4">
+                    <div class="flex flex-col gap-1">
+                      @for (player of row.team; track player.id) {
+                        <div class="flex items-center gap-2">
+                          <lib-flags [country]="player?.flag || ''"></lib-flags>
+                          <span class="truncate">{{ player.name }}</span>
+                        </div>
+                      }
+                    </div>
+                  </td>
+
+                  <td class="py-3 pr-4 font-semibold">{{ row.pointsEarned }}</td>
+                  <td class="py-3 pr-4">{{ row.score }}</td>
+                  <td class="py-3 pr-4">{{ row.percentile | number:'1.0-2' }}</td>
+
+                  <td class="py-3 pr-0">
+                    <button class="px-3 py-1 rounded-lg bg-black/20 hover:bg-black/30 text-xs font-semibold"
+                            (click)="toggleRank(row.rank)">
+                      {{ expandedRank() === row.rank ? 'Hide' : 'Show' }}
+                    </button>
+
+                    @if (expandedRank() === row.rank) {
+                      <div class="mt-3 rounded-xl bg-black/20 p-3">
+                        <div class="text-xs font-semibold opacity-80 mb-2">Point breakdown</div>
+                        @if (breakdownEntries(row.pointBreakdown).length) {
+                          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            @for (b of breakdownEntries(row.pointBreakdown); track b.key) {
+                              <div class="flex items-center justify-between gap-3 text-xs">
+                                <span class="font-mono opacity-90">{{ b.key }}</span>
+                                <span class="opacity-80">x{{ b.timesAchieved }}</span>
+                                <span class="font-semibold">{{ b.pointsEarned }}</span>
+                              </div>
+                            }
+                          </div>
+                        } @else {
+                          <div class="text-xs opacity-70">No breakdown available.</div>
+                        }
+                      </div>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <p class="text-sm opacity-80">No results available.</p>
+      }
+    </div>
+
+    <!-- Payout -->
+    @if (payoutRanks().length) {
+      <div class="rounded-2xl bg-secondary shadow-lg my-4 mx-2 p-6 text-white">
+        <h2 class="text-xl font-bold mb-4">Payout</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left opacity-80 border-b border-white/10">
+                <th class="py-2 pr-4">Placement threshold</th>
+                <th class="py-2 pr-0">Rewards</th>
               </tr>
+            </thead>
+            <tbody>
+              @for (rank of payoutRanks(); track rank.threshold) {
+                <tr class="border-b border-white/5 align-top">
+                  <td class="py-3 pr-4 font-semibold">Top {{ rank.threshold }}</td>
+                  <td class="py-3 pr-0">
+                    <div class="flex flex-col gap-1">
+                      @for (p of rank.payouts; track p.rewardType + '-' + p.value + '-' + p.quantity) {
+                        <div class="text-xs">
+                          <span class="font-semibold">{{ p.rewardType }}</span>
+                          <span class="opacity-80">· {{ p.value }} (x{{ p.quantity }})</span>
+                        </div>
+                      }
+                    </div>
+                  </td>
+                </tr>
+              }
             </tbody>
           </table>
         </div>
       </div>
-    </div> -->
+    }
+
+    <!-- Scoring rules -->
+    @if (scoringRules().length) {
+      <div class="rounded-2xl bg-secondary shadow-lg my-4 mx-2 p-6 text-white">
+        <h2 class="text-xl font-bold mb-4">Scoring rules</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left opacity-80 border-b border-white/10">
+                <th class="py-2 pr-4">Tracked stat</th>
+                <th class="py-2 pr-4">Rule</th>
+                <th class="py-2 pr-0">Tiers</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (rule of scoringRules(); track rule.trackedStat) {
+                <tr class="border-b border-white/5 align-top">
+                  <td class="py-3 pr-4 font-mono">{{ rule.trackedStat }}</td>
+                  <td class="py-3 pr-4">{{ rule.matchRule }}</td>
+                  <td class="py-3 pr-0">
+                    <div class="flex flex-col gap-1">
+                      @for (tier of rule.rewardTiers; track tier.keyValue + '-' + tier.pointsEarned) {
+                        <div class="text-xs">
+                          <span class="font-semibold">{{ tier.pointsEarned }} pts</span>
+                          <span class="opacity-80">
+                            @if (tier.multiplicative) { · multiplicative }
+                            · key {{ tier.keyValue }}
+                          </span>
+                        </div>
+                      }
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  } @else {
+    <div class="rounded-2xl bg-secondary shadow-lg my-4 mx-2 p-6 text-white">
+      <p class="text-sm opacity-80">Cargando detalles de la ventana…</p>
+    </div>
+  }
 
 </div>
