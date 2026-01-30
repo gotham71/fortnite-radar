@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input } from '@angular/core';
 
 @Component({
   selector: 'lib-flags',
@@ -7,87 +7,100 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, O
   templateUrl: './flags.html',
   styleUrl: './flags.scss',
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
+export class Flags {
+  private readonly cdr = inject(ChangeDetectorRef);
 
-export class Flags implements OnInit {
   private countries: Record<string, string> = {};
   private countriesLoaded = false;
-  private loadingPromise?: Promise<void>;
-  private FLAGS_URL = 'https://flagcdn.com/w40';
+  private loadingPromise: Promise<void> | null = null;
+
+  readonly FLAGS_URL = 'https://flagcdn.com/w40';
   flagCodeName = '';
   countryName = '';
-  private cdr = inject(ChangeDetectorRef);
+  /** true mientras se cargan countries.json o se resuelve el código */
+  loading = false;
+  /** true cuando la imagen de la bandera ha fallado (404, red, etc.) */
+  imageError = false;
+  /** false hasta que la imagen dispare load (evita flash vacío) */
+  imageLoaded = false;
 
   @Input() set country(value: string) {
     this.updateFlag(value ?? '');
   }
 
-  ngOnInit() {
-    this.loadCountries();
-
-   /*  if (this.countries && this.country) {
-      const country = this.getLastPart(this.country);
-      console.log("🚀 ~ Flags ~ ngOnInit ~ country:", country)
-      this.flagCodeName = this.getCountryCodeByName(country);
-    } */
-  }
-
-  private async loadCountries() {
-    try {
-      const response = await fetch('/countries.json');
-      this.countries = await response.json();
-    } catch (error) {
-      console.error('Error loading countries:', error);
-    }
-  }
-
   get urlFlag(): string {
-    return this.flagCodeName ? `${this.FLAGS_URL}/${this.flagCodeName}.png` : '';
+    return this.flagCodeName && !this.imageError
+      ? `${this.FLAGS_URL}/${this.flagCodeName}.png`
+      : '';
   }
 
-  getLastPart(input: string): string {
+  get showPlaceholder(): boolean {
+    return !this.flagCodeName || this.imageError || this.loading;
+  }
+
+  private getLastPart(input: string): string {
     return input.split('_').pop() ?? '';
   }
 
-  getCountryCodeByName(name: string): string {
+  private getCountryCodeByName(name: string): string {
+    const normalized = (s: string) => s.replace(/\s+/g, '').toLowerCase();
     const entry = Object.entries(this.countries).find(
-      ([, value]) => value.replace(/\s+/g, '').toLowerCase() === name.toLowerCase()
+      ([, value]) => normalized(value) === normalized(name)
     );
     this.countryName = entry ? entry[1] : '';
     return entry ? entry[0] : '';
   }
 
-  private async ensureCountriesLoaded(): Promise<void> {
-    if (this.countriesLoaded) return;
+  private ensureCountriesLoaded(): Promise<void> {
+    if (this.countriesLoaded) return Promise.resolve();
     if (!this.loadingPromise) {
-      // Si tu JSON está en src/assets/countries.json:
       this.loadingPromise = fetch('/countries.json')
-        .then(r => r.json())
-        .then(json => {
+        .then((r) => r.json())
+        .then((json) => {
           this.countries = json;
           this.countriesLoaded = true;
         })
-        .catch(err => {
+        .catch((err) => {
           console.error('Error loading countries:', err);
           this.countries = {};
           this.countriesLoaded = true;
         });
     }
-    await this.loadingPromise;
+    return this.loadingPromise;
   }
 
-  private async updateFlag(raw: string) {
+  private async updateFlag(raw: string): Promise<void> {
     const countryName = this.getLastPart(raw);
+    this.imageError = false;
+    this.imageLoaded = false;
     if (!countryName) {
       this.flagCodeName = '';
+      this.countryName = '';
+      this.loading = false;
       this.cdr.markForCheck();
       return;
     }
 
-    await this.ensureCountriesLoaded();
+    this.loading = true;
+    this.cdr.markForCheck();
 
+    await this.ensureCountriesLoaded();
     this.flagCodeName = this.getCountryCodeByName(countryName);
-    this.cdr.markForCheck(); // necesario si usas OnPush
+    this.loading = false;
+    this.cdr.markForCheck();
+  }
+
+  onFlagImageLoad(): void {
+    this.imageError = false;
+    this.imageLoaded = true;
+    this.cdr.markForCheck();
+  }
+
+  onFlagImageError(): void {
+    this.imageError = true;
+    this.imageLoaded = false;
+    this.cdr.markForCheck();
   }
 }

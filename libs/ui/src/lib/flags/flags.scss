@@ -1,4 +1,63 @@
-img {
-  width: 30px;
-  border-radius: 2px;
+.flags-wrapper {
+  .flags-img-wrap {
+    width: 30px;
+    height: 22px;
+    border-radius: 3px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.08);
+
+    .flags-skeleton-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+  }
+
+  .flags-img {
+    width: 30px;
+    height: 22px;
+    object-fit: cover;
+    border-radius: 3px;
+    display: block;
+  }
+
+  .flags-skeleton {
+    display: block;
+    width: 30px;
+    height: 22px;
+    border-radius: 3px;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.06) 25%,
+      rgba(255, 255, 255, 0.12) 50%,
+      rgba(255, 255, 255, 0.06) 75%
+    );
+    background-size: 200% 100%;
+    animation: flags-skeleton 1s ease-in-out infinite;
+  }
+
+  .flags-placeholder {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 22px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .flags-name {
+    font-size: inherit;
+    color: inherit;
+    opacity: 0.95;
+  }
+}
+
+@keyframes flags-skeleton {
+  to {
+    background-position: 200% 0;
+  }
 }
