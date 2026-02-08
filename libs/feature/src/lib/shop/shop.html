@@ -1,0 +1,76 @@
+<div class="shop-container py-8 px-4 max-w-7xl mx-auto">
+    <h1 class="text-3xl font-bold text-accent mb-8">Daily Shop</h1>
+
+    @if (sections().length) {
+    @for (section of sections(); track section.name) {
+    <div class="section mb-12">
+        <h2 class="text-2xl font-bold text-white mb-6 border-b border-white/10 pb-2 uppercase tracking-wider">{{
+            section.name }}</h2>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            @for (item of section.items; track item.offerId) {
+            <div class="shop-item relative group rounded-xl overflow-hidden bg-secondary shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl hover:z-10"
+                [ngClass]="'rarity-' + (item.brItems?.[0]?.rarity?.value || 'common')">
+
+                <!-- Image -->
+                <div class="aspect-square relative overflow-hidden">
+                    @if (getImage(item)) {
+                    <img [src]="getImage(item)" [alt]="item.devName" (error)="handleImageError(item.offerId)"
+                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    } @else {
+                    <div class="w-full h-full bg-white/5 flex items-center justify-center">
+                        <span class="text-xs opacity-50">No Image</span>
+                    </div>
+                    }
+
+                    <!-- Price Tag -->
+                    <div
+                        class="absolute bottom-2 right-2 bg-black/70 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 border border-white/10 z-10">
+                        @if (vbuckIcon()) {
+                        <img [src]="vbuckIcon()" alt="V-Bucks" class="w-4 h-4">
+                        } @else {
+                        <span class="text-xs font-bold text-blue-300">VB</span>
+                        }
+                        <span class="text-sm font-bold text-white">{{ item.finalPrice }}</span>
+                    </div>
+
+                    <!-- Giftable Indicator (Optional) -->
+                    @if (item.giftable) {
+                    <div
+                        class="absolute top-2 right-2 bg-black/40 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7">
+                            </path>
+                        </svg>
+                    </div>
+                    }
+                </div>
+
+                <!-- Info -->
+                <div
+                    class="p-3 bg-gradient-to-t from-black/90 via-black/60 to-transparent absolute bottom-0 w-full pt-12 pointer-events-none">
+                    @if (item.tracks && item.tracks.length > 0) {
+                    <h3 class="text-sm font-extrabold text-white truncate text-shadow drop-shadow-md">{{
+                        item.tracks[0].title
+                        }}</h3>
+                    <p class="text-xs text-gray-300 truncate opacity-90">{{ item.tracks[0].artist }}</p>
+                    } @else {
+                    <h3 class="text-sm font-extrabold text-white truncate text-shadow drop-shadow-md">{{
+                        item.brItems?.[0]?.name || item.devName }}</h3>
+                    <p class="text-xs text-gray-300 truncate opacity-90">{{ item.brItems?.[0]?.type?.displayValue }}</p>
+                    }
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+    }
+    } @else {
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 animate-pulse">
+        @for (i of [1,2,3,4,5,6,7,8]; track i) {
+        <div class="aspect-square bg-white/5 rounded-xl"></div>
+        }
+    </div>
+    }
+</div>

@@ -1,8 +1,8 @@
-import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { join } from 'path';
+import express from 'express';
 import fetch from 'node-fetch';
+import { join } from 'path';
 
 // Cargar variables de entorno
 const envPath = join(process.cwd(), '.env');
@@ -169,6 +169,27 @@ app.get('/api/getWindowDetailsById', async (req, res) => {
     console.error('Error fetching window details:', error);
     res.status(500).json({ 
       error: 'Failed to fetch window details',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// GET /api/getShop
+app.get('/api/getShop', async (req, res) => {
+  try {
+    // Note: User modified api/getShop.ts to use /v2/shop instead of /v2/shop/br
+    const response = await fetch(`https://fortnite-api.com/v2/shop?language=en`);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    res.status(200).json(data);
+  } catch (error) {
+    console.error('Error fetching shop:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch shop',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
   }

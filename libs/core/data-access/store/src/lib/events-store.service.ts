@@ -13,6 +13,7 @@ export class EventsStoreService {
   private readonly _windowDetails = signal<TournamentWindowResponse | null>(null);
   private readonly _eventRules = signal<Rule | null>(null);
   private readonly _eventLeaderboard = signal<LeaderboardEntry | null>(null);
+  private readonly _windowDetailsError = signal<string | null>(null);
   private readonly isLoading = inject(LoadingStoreService);
   readonly allEvents = computed(() => this._allEvents());
   readonly eventsActive = computed(() => this._eventsActive());
@@ -20,6 +21,7 @@ export class EventsStoreService {
   readonly eventRules = computed(() => this._eventRules());
   readonly eventLeaderboard = computed(() => this._eventLeaderboard());
   readonly windowDetails = computed(() => this._windowDetails());
+  readonly windowDetailsError = computed(() => this._windowDetailsError());
 
   private withLoading<T>(obs$: Observable<T>): Observable<T> {
     this.isLoading.showLoading();
@@ -107,6 +109,7 @@ export class EventsStoreService {
   } */
 
   getWindowDetailsById(windowId: string) {
+    this._windowDetailsError.set(null); // Reset error
     this.withLoading(
       this.http.get<TournamentWindowResponse>(`/api/getWindowDetailsById?windowId=${windowId}`)
     ).subscribe({
@@ -116,6 +119,7 @@ export class EventsStoreService {
       error: (error) => {
         console.error('Failed to load Event Details:', error);
         this._windowDetails.set(null);
+        this._windowDetailsError.set('Error loading event details. Please try again later.');
       }
     });
   }

@@ -11,4 +11,5 @@ export const appRoutes: Route[] = [
     ]
   },
   {path: 'maps', loadComponent: () => import('@fortnite-radar/news').then(m => m.Maps)},
+  {path: 'shop', loadComponent: () => import('@fortnite-radar/news').then(m => m.Shop)},
 ];

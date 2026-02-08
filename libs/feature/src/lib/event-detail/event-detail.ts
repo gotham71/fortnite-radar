@@ -27,6 +27,7 @@ export class EventDetail implements OnInit, OnDestroy {
   readonly scoringRules = computed(() => this.windowDetails()?.rules?.scoring ?? []);
   readonly tieRules = computed(() => this.windowDetails()?.rules?.tie?.components ?? []);
   readonly payoutRanks = computed(() => this.windowDetails()?.payout?.ranks ?? []);
+  readonly windowDetailsError = computed(() => this.eventsStore.windowDetailsError());
 
   readonly windowResultsDetails = computed(() => {
     const results = this.eventsStore.windowDetails()?.session?.results ?? [];
