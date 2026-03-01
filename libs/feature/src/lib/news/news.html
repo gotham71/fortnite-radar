@@ -1,11 +1,11 @@
-@if(hitNew) {
+@if(hitNew(); as mainNews) {
 
 <div
   class="relative bg-cover bg-center bg-no-repeat min-h-[60vh] flex items-center justify-center rounded-lg px-6 md:px-12 mb-6"
-  style="background-image: url({{hitNew.image}});">
+  style="background-image: url({{mainNews.image}});">
   <div class="bg-black bg-opacity-60 rounded-lg p-8 max-w-4xl text-center text-white drop-shadow-lg">
-    <h1 class="text-3xl md:text-5xl font-extrabold mb-4">{{hitNew.title}}</h1>
-    <p class="text-sm md:text-lg leading-relaxed">{{hitNew.body}}</p>
+    <h1 class="text-3xl md:text-5xl font-extrabold mb-4">{{mainNews.title}}</h1>
+    <p class="text-sm md:text-lg leading-relaxed">{{mainNews.body}}</p>
   </div>
 </div>
 <section class="flex flex-col gap-6 pb-4">

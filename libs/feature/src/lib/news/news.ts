@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject, OnInit } from '@angular/core';
-import { Motd } from '@fortnite-radar/models';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { NewsStoreService } from '@fortnite-radar/store';
 
 @Component({
@@ -12,13 +11,10 @@ import { NewsStoreService } from '@fortnite-radar/store';
 })
 export class News implements OnInit {
   private newsStore = inject(NewsStoreService);
-  readonly motds = this.newsStore.motds;
-  hitNew!: Motd;
+  private readonly allMotds = this.newsStore.motds;
 
-  private logEffect = effect(() => {
-    this.hitNew = this.motds()[0];
-    this.motds().shift();
-  });
+  readonly hitNew = computed(() => this.allMotds()[0]);
+  readonly motds = computed(() => this.allMotds().slice(1));
 
   ngOnInit() {
     this.newsStore.getNewsList();
