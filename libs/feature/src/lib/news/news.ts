@@ -15,6 +15,8 @@ export class News implements OnInit {
 
   readonly hitNew = computed(() => this.allMotds()[0]);
   readonly motds = computed(() => this.allMotds().slice(1));
+  readonly loading = this.newsStore.loading;
+  readonly error = this.newsStore.error;
 
   ngOnInit() {
     this.newsStore.getNewsList();

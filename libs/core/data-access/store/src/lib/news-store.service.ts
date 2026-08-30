@@ -1,21 +1,16 @@
 import { HttpClient } from "@angular/common/http";
 import { computed, inject, Injectable, signal } from "@angular/core";
 import { FortniteNewsResponse, Motd } from "@fortnite-radar/models";
-import { finalize, Observable } from "rxjs";
-import { LoadingStoreService } from "./loading-store.service";
 
 @Injectable({ providedIn: 'root' })
 export class NewsStoreService {
   private http = inject(HttpClient);
   private readonly _news = signal<FortniteNewsResponse | null>(null);
+  private readonly _error = signal<string | null>(null);
+
   readonly news = computed(() => this._news());
-
-  private isLoading = inject(LoadingStoreService);
-
-  private withLoading<T>(obs$: Observable<T>): Observable<T> {
-    this.isLoading.showLoading();
-    return obs$.pipe(finalize(() => this.isLoading.hideLoading()));
-  }
+  readonly error = computed(() => this._error());
+  readonly loading = computed(() => this._news() === null && this._error() === null);
 
   readonly motds = computed<Motd[]>(() => {
     const items = this.news()?.data.br.motds ?? [];
@@ -23,8 +18,8 @@ export class NewsStoreService {
   });
 
   getNewsList() {
-    this.withLoading(
-      this.http.get<FortniteNewsResponse>(`/api/getNews`))
+    this._error.set(null);
+    this.http.get<FortniteNewsResponse>(`/api/getNews`)
       .subscribe({
         next: (response) => {
           this._news.set(response);
@@ -32,6 +27,7 @@ export class NewsStoreService {
         error: (error) => {
           console.error('Failed to load news:', error);
           this._news.set(null);
+          this._error.set('News are currently unavailable. Please try again later.');
         }
       });
   }

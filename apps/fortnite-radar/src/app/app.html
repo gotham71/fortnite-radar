@@ -1,7 +1,11 @@
 <lib-header></lib-header>
-<main class="bg-third text-text min-h-screen">
-  <div class="container mx-auto py-8">
-    <lib-loading></lib-loading>
+<main class="bg-third text-text min-h-screen flex flex-col">
+  <div class="container mx-auto py-8 flex-1">
     <router-outlet></router-outlet>
   </div>
+  <footer class="text-center text-sm text-white/60 py-6 border-t border-white/10">
+    Data provided by
+    <a href="https://fortnite-api.com" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">fortnite-api.com</a>
+    · Not affiliated with Epic Games.
+  </footer>
 </main>

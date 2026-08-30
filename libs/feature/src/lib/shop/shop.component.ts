@@ -14,6 +14,8 @@ export class Shop implements OnInit {
   private shopStore = inject(ShopStoreService);
   readonly entries = this.shopStore.entries;
   readonly vbuckIcon = computed(() => this.shopStore.shop()?.data?.vbuckIcon);
+  readonly loading = this.shopStore.loading;
+  readonly error = this.shopStore.error;
 
   // Set to track images that failed to load
   private failedImages = signal<Set<string>>(new Set());

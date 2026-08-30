@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 
@@ -14,5 +14,13 @@ import { RouterModule } from '@angular/router';
 })
 
 export class Header {
+  readonly menuOpen = signal(false);
 
+  toggleMenu() {
+    this.menuOpen.update((open) => !open);
+  }
+
+  closeMenu() {
+    this.menuOpen.set(false);
+  }
 }
