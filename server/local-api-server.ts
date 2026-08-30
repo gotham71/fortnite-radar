@@ -2,7 +2,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import { join } from 'path';
-import { fetchFromFortniteApi, fetchPublicFortniteApi, MissingEnvError } from '../api/_lib/fortniteApiClient';
+import { buildCompetitiveModes, RawPlaylist } from '../api/_lib/competitiveModes';
+import { fetchPublicFortniteApi } from '../api/_lib/fortniteApiClient';
 
 // Cargar variables de entorno
 const envPath = join(process.cwd(), '.env');
@@ -22,13 +23,6 @@ app.get('/health', (req, res) => {
 });
 
 function handleFortniteApiError(res: express.Response, context: string, error: unknown) {
-  if (error instanceof MissingEnvError) {
-    return res.status(500).json({
-      error: 'Missing API_KEY or BASE_URL',
-      missing: error.missing,
-      message: `${error.message}. Please configure them in .env file.`,
-    });
-  }
   console.error(`Error ${context}:`, error);
   res.status(500).json({
     error: `Failed to ${context}`,
@@ -56,39 +50,13 @@ app.get('/api/getMapWithPois', async (req, res) => {
   }
 });
 
-// GET /api/getActiveEvents
-app.get('/api/getActiveEvents', async (req, res) => {
+// GET /api/getPlaylists
+app.get('/api/getPlaylists', async (req, res) => {
   try {
-    const data = await fetchFromFortniteApi('/v1/events/list/active?language=en');
-    res.status(200).json(data);
+    const { data } = await fetchPublicFortniteApi<{ data: RawPlaylist[] }>('/v1/playlists');
+    res.status(200).json({ status: 200, data: buildCompetitiveModes(data) });
   } catch (error) {
-    handleFortniteApiError(res, 'fetch active events', error);
-  }
-});
-
-// GET /api/getAllEvents
-app.get('/api/getAllEvents', async (req, res) => {
-  try {
-    const data = await fetchFromFortniteApi('/v1/events/list?language=en');
-    res.status(200).json(data);
-  } catch (error) {
-    handleFortniteApiError(res, 'fetch all events', error);
-  }
-});
-
-// GET /api/getWindowDetailsById
-app.get('/api/getWindowDetailsById', async (req, res) => {
-  const { windowId } = req.query;
-
-  if (!windowId || typeof windowId !== 'string') {
-    return res.status(400).json({ error: 'windowId is required' });
-  }
-
-  try {
-    const data = await fetchFromFortniteApi(`/v1/events/window?windowId=${windowId}`);
-    res.status(200).json(data);
-  } catch (error) {
-    handleFortniteApiError(res, 'fetch window details', error);
+    handleFortniteApiError(res, 'fetch playlists', error);
   }
 });
 
@@ -104,7 +72,4 @@ app.get('/api/getShop', async (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`🚀 Servidor API local ejecutándose en http://localhost:${PORT}`);
-  console.log(`📝 Variables de entorno cargadas:`);
-  console.log(`   - FORTNITE_API_KEY: ${process.env.FORTNITE_API_KEY ? '✅ Configurada' : '❌ No configurada'}`);
-  console.log(`   - FORTNITE_API_URL_BASE: ${process.env.FORTNITE_API_URL_BASE ? '✅ Configurada' : '❌ No configurada'}`);
 });
