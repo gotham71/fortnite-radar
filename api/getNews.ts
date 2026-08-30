@@ -1,13 +1,12 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import fetch from 'node-fetch';
+import { fetchPublicFortniteApi } from './_lib/fortniteApiClient';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
-    const response = await fetch(`https://fortnite-api.com/v2/news?language=en`);
-    const data = await response.json();
+    const data = await fetchPublicFortniteApi('/v2/news?language=en');
     res.status(200).json(data);
   } catch (error) {
-    console.error('Error fetching active events:', error);
-    res.status(500).json({ error: 'Failed to fetch active events' });
+    console.error('Error fetching news:', error);
+    res.status(500).json({ error: 'Failed to fetch news' });
   }
 }

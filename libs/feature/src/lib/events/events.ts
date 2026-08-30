@@ -15,7 +15,7 @@ import { PlatformIcons } from '@fortnite-radar/ui';
 export class Events implements OnInit, OnDestroy {
   private eventsStore = inject(EventsStoreService);
   private router = inject(Router);
-  //readonly events = this.eventsStore.events;
+  readonly error = this.eventsStore.allEventsError;
 
   readonly events = computed(() => {
     const today = new Date();

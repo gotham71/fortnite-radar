@@ -171,7 +171,7 @@ export interface RewardTier  {
   multiplicative: boolean;
 };
 
-export interface TorunamentWindowScoring  {
+export interface ScoringRule  {
   trackedStat: string;
   matchRule: "lte" | "gte";
   rewardTiers: RewardTier[];

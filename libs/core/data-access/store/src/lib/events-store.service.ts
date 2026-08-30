@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { computed, inject, Injectable, signal } from "@angular/core";
-import { LeaderboardEntry, PointBreakDown, Rule, TorunamentWindowScoring, TournamentEntry, TournamentResponse, TournamentWindowResponse } from "@fortnite-radar/models";
+import { LeaderboardEntry, PointBreakDown, Rule, ScoringRule, TournamentEntry, TournamentResponse, TournamentWindowResponse } from "@fortnite-radar/models";
 import { finalize, Observable } from "rxjs";
 import { LoadingStoreService } from "./loading-store.service";
 
@@ -14,8 +14,10 @@ export class EventsStoreService {
   private readonly _eventRules = signal<Rule | null>(null);
   private readonly _eventLeaderboard = signal<LeaderboardEntry | null>(null);
   private readonly _windowDetailsError = signal<string | null>(null);
+  private readonly _allEventsError = signal<string | null>(null);
   private readonly isLoading = inject(LoadingStoreService);
   readonly allEvents = computed(() => this._allEvents());
+  readonly allEventsError = computed(() => this._allEventsError());
   readonly eventsActive = computed(() => this._eventsActive());
   readonly eventDetails = computed(() => this._eventDetails());
   readonly eventRules = computed(() => this._eventRules());
@@ -35,6 +37,7 @@ export class EventsStoreService {
 
 
   getAllEvents() {
+    this._allEventsError.set(null);
     this.withLoading(this.http.get<TournamentResponse>(`/api/getAllEvents`))
       .subscribe({
         next: (response) => {
@@ -43,6 +46,7 @@ export class EventsStoreService {
         error: (error) => {
           console.error('Failed to load All Events:', error);
           this._allEvents.set(null);
+          this._allEventsError.set('Events service is currently unavailable. Please try again later.');
         }
       })
   }
@@ -124,7 +128,7 @@ export class EventsStoreService {
     });
   }
 
-  calculateTotalPoints(stats: PointBreakDown, scoringRules: TorunamentWindowScoring[]): number {
+  calculateTotalPoints(stats: PointBreakDown, scoringRules: ScoringRule[]): number {
     let totalPoints = 0;
 
     for (const rule of scoringRules) {

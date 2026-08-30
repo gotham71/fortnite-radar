@@ -6,9 +6,22 @@ export interface FortniteMap {
 }
 
 export interface POI {
-  id: string
-  name: string
-  x: number
-  y: number
-  images: string[]
+  id: string;
+  name: string;
+  location: {
+    x: number;
+    y: number;
+    z: number;
+  };
+}
+
+export interface MapResponse {
+  status: number;
+  data: {
+    images: {
+      blank: string;
+      pois: string;
+    };
+    pois: POI[];
+  };
 }
