@@ -1,6 +1,6 @@
 @if (error()) {
 <div class="w-full shadow-lg rounded-2xl p-12 text-center bg-secondary text-white mb-6">
-  <p class="text-2xl font-bold text-accent mb-2">⚠️ News unavailable</p>
+  <p class="text-2xl font-bold text-accent mb-2">{{ 'news.unavailableTitle' | translate }}</p>
   <p class="text-gray-400">{{ error() }}</p>
 </div>
 }
@@ -49,8 +49,8 @@
 </section>
 } @else {
 <div class="w-full shadow-lg rounded-2xl p-12 text-center bg-secondary text-white">
-  <p class="text-2xl font-bold text-accent mb-2">No news available</p>
-  <p class="text-gray-400">Check back later for the latest Fortnite updates.</p>
+  <p class="text-2xl font-bold text-accent mb-2">{{ 'news.emptyTitle' | translate }}</p>
+  <p class="text-gray-400">{{ 'news.emptyBody' | translate }}</p>
 </div>
 }
 }

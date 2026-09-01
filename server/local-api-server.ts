@@ -4,6 +4,7 @@ import express from 'express';
 import { join } from 'path';
 import { buildCompetitiveModes, RawPlaylist } from '../api/_lib/competitiveModes';
 import { fetchAuthenticatedFortniteApi, fetchPublicFortniteApi, FortniteApiError, MissingApiKeyError } from '../api/_lib/fortniteApiClient';
+import { resolveLocale } from '../api/_lib/locale';
 
 // Cargar variables de entorno
 const envPath = join(process.cwd(), '.env');
@@ -33,7 +34,8 @@ function handleFortniteApiError(res: express.Response, context: string, error: u
 // GET /api/getNews
 app.get('/api/getNews', async (req, res) => {
   try {
-    const data = await fetchPublicFortniteApi('/v2/news?language=en');
+    const lang = resolveLocale(req.query.lang);
+    const data = await fetchPublicFortniteApi(`/v2/news?language=${lang}`);
     res.status(200).json(data);
   } catch (error) {
     handleFortniteApiError(res, 'fetch news', error);
@@ -43,7 +45,8 @@ app.get('/api/getNews', async (req, res) => {
 // GET /api/getMapWithPois
 app.get('/api/getMapWithPois', async (req, res) => {
   try {
-    const data = await fetchPublicFortniteApi('/v1/map');
+    const lang = resolveLocale(req.query.lang);
+    const data = await fetchPublicFortniteApi(`/v1/map?language=${lang}`);
     res.status(200).json(data);
   } catch (error) {
     handleFortniteApiError(res, 'fetch map with pois', error);
@@ -53,8 +56,9 @@ app.get('/api/getMapWithPois', async (req, res) => {
 // GET /api/getPlaylists
 app.get('/api/getPlaylists', async (req, res) => {
   try {
-    const { data } = await fetchPublicFortniteApi<{ data: RawPlaylist[] }>('/v1/playlists');
-    res.status(200).json({ status: 200, data: buildCompetitiveModes(data) });
+    const lang = resolveLocale(req.query.lang);
+    const { data } = await fetchPublicFortniteApi<{ data: RawPlaylist[] }>(`/v1/playlists?language=${lang}`);
+    res.status(200).json({ status: 200, data: buildCompetitiveModes(data, lang) });
   } catch (error) {
     handleFortniteApiError(res, 'fetch playlists', error);
   }
@@ -63,7 +67,8 @@ app.get('/api/getPlaylists', async (req, res) => {
 // GET /api/getShop
 app.get('/api/getShop', async (req, res) => {
   try {
-    const data = await fetchPublicFortniteApi('/v2/shop?language=en');
+    const lang = resolveLocale(req.query.lang);
+    const data = await fetchPublicFortniteApi(`/v2/shop?language=${lang}`);
     res.status(200).json(data);
   } catch (error) {
     handleFortniteApiError(res, 'fetch shop', error);
@@ -99,8 +104,9 @@ app.get('/api/getCosmetics', async (req, res) => {
   }
 
   try {
+    const lang = resolveLocale(req.query.lang);
     const data = await fetchPublicFortniteApi(
-      `/v2/cosmetics/br/search/all?name=${encodeURIComponent(name)}&matchMethod=contains`
+      `/v2/cosmetics/br/search/all?name=${encodeURIComponent(name)}&matchMethod=contains&language=${lang}`
     );
     res.status(200).json(data);
   } catch (error) {

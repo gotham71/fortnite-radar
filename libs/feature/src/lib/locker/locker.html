@@ -1,16 +1,16 @@
 <section class="py-12">
-  <h2 class="text-4xl font-extrabold mb-2 text-center text-yellow-400">🎒 Locker</h2>
+  <h2 class="text-4xl font-extrabold mb-2 text-center text-yellow-400">{{ 'locker.title' | translate }}</h2>
   <p class="text-center text-gray-300 mb-10 max-w-2xl mx-auto">
-    Search any Fortnite skin, back bling, pickaxe or emote by name.
+    {{ 'locker.subtitle' | translate }}
   </p>
 
   <form (submit)="search($event, nameInput.value)" class="flex gap-3 max-w-xl mx-auto mb-10">
-    <input #nameInput type="text" placeholder="e.g. Peely, Renegade Raider..." autocomplete="off"
+    <input #nameInput type="text" [placeholder]="'locker.searchPlaceholder' | translate" autocomplete="off"
       class="flex-1 rounded-lg px-4 py-2 bg-secondary text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-accent" />
     <button type="submit"
       class="bg-accent text-black font-bold px-5 py-2 rounded-lg hover:brightness-110 transition disabled:opacity-50"
       [disabled]="loading()">
-      Search
+      {{ 'locker.search' | translate }}
     </button>
   </form>
 
@@ -25,7 +25,7 @@
 
   @if (error()) {
   <div class="w-full shadow-lg rounded-2xl p-12 text-center bg-secondary text-white mb-6">
-    <p class="text-2xl font-bold text-accent mb-2">⚠️ Locker search unavailable</p>
+    <p class="text-2xl font-bold text-accent mb-2">{{ 'locker.unavailableTitle' | translate }}</p>
     <p class="text-gray-400">{{ error() }}</p>
   </div>
   }
@@ -54,13 +54,13 @@
     } @empty {
     @if (searched()) {
     <div class="col-span-full w-full shadow-lg rounded-2xl p-12 text-center bg-secondary text-white">
-      <p class="text-2xl font-bold text-accent mb-2">No results</p>
-      <p class="text-gray-400">Try a different name.</p>
+      <p class="text-2xl font-bold text-accent mb-2">{{ 'locker.noResultsTitle' | translate }}</p>
+      <p class="text-gray-400">{{ 'locker.noResultsBody' | translate }}</p>
     </div>
     } @else {
     <div class="col-span-full w-full shadow-lg rounded-2xl p-12 text-center bg-secondary text-white">
-      <p class="text-2xl font-bold text-accent mb-2">Search the Locker</p>
-      <p class="text-gray-400">Type a cosmetic name above to get started.</p>
+      <p class="text-2xl font-bold text-accent mb-2">{{ 'locker.emptyTitle' | translate }}</p>
+      <p class="text-gray-400">{{ 'locker.emptyBody' | translate }}</p>
     </div>
     }
     }
@@ -103,27 +103,27 @@
       <dl class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm mb-4">
         @if (item.set) {
         <div>
-          <dt class="text-gray-400 text-xs uppercase">Set</dt>
+          <dt class="text-gray-400 text-xs uppercase">{{ 'locker.set' | translate }}</dt>
           <dd>{{ item.set.value }}</dd>
         </div>
         }
         @if (item.introduction) {
         <div>
-          <dt class="text-gray-400 text-xs uppercase">Introduced</dt>
+          <dt class="text-gray-400 text-xs uppercase">{{ 'locker.introduced' | translate }}</dt>
           <dd>{{ item.introduction.text }}</dd>
         </div>
         }
         @if (item.added) {
         <div>
-          <dt class="text-gray-400 text-xs uppercase">Added</dt>
-          <dd>{{ item.added | date:"d MMM y" }}</dd>
+          <dt class="text-gray-400 text-xs uppercase">{{ 'locker.added' | translate }}</dt>
+          <dd>{{ item.added | date:'d MMM y':undefined:(locale() === 'es' ? 'es' : 'en-US') }}</dd>
         </div>
         }
       </dl>
 
       @if (item.showcaseVideo) {
       <div class="aspect-video rounded-xl overflow-hidden mb-4">
-        <iframe class="w-full h-full" [src]="getSafeVideoUrl(item.showcaseVideo)" title="Showcase video"
+        <iframe class="w-full h-full" [src]="getSafeVideoUrl(item.showcaseVideo)" [title]="'locker.showcaseVideo' | translate"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen></iframe>
       </div>

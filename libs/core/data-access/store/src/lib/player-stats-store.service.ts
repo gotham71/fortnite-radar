@@ -1,10 +1,12 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { computed, inject, Injectable, signal } from "@angular/core";
 import { PlayerStats, PlayerStatsResponse } from "@fortnite-radar/models";
+import { TranslateService } from "./translate.service";
 
 @Injectable({ providedIn: 'root' })
 export class PlayerStatsStoreService {
   private http = inject(HttpClient);
+  private translateService = inject(TranslateService);
   private readonly _stats = signal<PlayerStats | null>(null);
   private readonly _error = signal<string | null>(null);
   private readonly _loading = signal(false);
@@ -33,8 +35,8 @@ export class PlayerStatsStoreService {
           this._loading.set(false);
           this._error.set(
             error.status === 404
-              ? `No player found named "${trimmed}".`
-              : 'Stats are currently unavailable. Please try again later.'
+              ? `${this.translateService.translate('events.statsNotFound')} "${trimmed}".`
+              : this.translateService.translate('events.statsError')
           );
         }
       });

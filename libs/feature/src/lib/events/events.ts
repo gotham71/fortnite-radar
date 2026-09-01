@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, CUSTOM_ELEMENTS_SCHEMA, effect, inject } from '@angular/core';
 import { PlayerModeStats } from '@fortnite-radar/models';
-import { EventsStoreService, PlayerStatsStoreService } from '@fortnite-radar/store';
+import { EventsStoreService, LocaleService, PlayerStatsStoreService } from '@fortnite-radar/store';
+import { TranslatePipe } from '@fortnite-radar/ui';
 
 interface ModeVisual {
   icon: string;
@@ -26,19 +27,21 @@ const DEFAULT_MODE_VISUAL: ModeVisual = { icon: 'mdi:trophy-outline', containerC
 
 @Component({
   selector: 'lib-events',
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './events.html',
   styleUrl: './events.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class Events implements OnInit {
+export class Events {
   private eventsStore = inject(EventsStoreService);
   private statsStore = inject(PlayerStatsStoreService);
+  private localeService = inject(LocaleService);
 
   readonly modes = this.eventsStore.modes;
   readonly loading = this.eventsStore.loading;
   readonly error = this.eventsStore.error;
+  readonly locale = this.localeService.locale;
 
   readonly playerStats = this.statsStore.stats;
   readonly statsLoading = this.statsStore.loading;
@@ -48,17 +51,20 @@ export class Events implements OnInit {
     const stats = this.playerStats();
     if (!stats) return [];
     const modes = stats.stats.all;
-    const rows: { label: string; data: PlayerModeStats }[] = [
-      { label: 'Overall', data: modes.overall },
-      { label: 'Solo', data: modes.solo as PlayerModeStats },
-      { label: 'Duo', data: modes.duo as PlayerModeStats },
-      { label: 'Squad', data: modes.squad as PlayerModeStats },
+    const rows: { labelKey: string; data: PlayerModeStats }[] = [
+      { labelKey: 'events.rowOverall', data: modes.overall },
+      { labelKey: 'events.rowSolo', data: modes.solo as PlayerModeStats },
+      { labelKey: 'events.rowDuo', data: modes.duo as PlayerModeStats },
+      { labelKey: 'events.rowSquad', data: modes.squad as PlayerModeStats },
     ];
     return rows.filter((row) => !!row.data);
   });
 
-  ngOnInit() {
-    this.eventsStore.getCompetitiveModes();
+  constructor() {
+    effect(() => {
+      this.localeService.locale();
+      this.eventsStore.getCompetitiveModes();
+    });
   }
 
   searchStats(event: Event, name: string) {

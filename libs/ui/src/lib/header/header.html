@@ -8,32 +8,41 @@
     </div>
 
     <nav class="hidden md:flex items-center space-x-6 lg:space-x-12 text-md lg:text-xl text-accent font-bold">
-      <a routerLink="/news" class="cursor-pointer">News</a>
-      <a routerLink="/events" class="cursor-pointer">Events</a>
-      <a routerLink="/maps" class="cursor-pointer">Map</a>
-      <a routerLink="/shop" class="cursor-pointer">Shop</a>
-      <a routerLink="/locker" class="cursor-pointer">Locker</a>
+      <a routerLink="/news" class="cursor-pointer">{{ 'header.nav.news' | translate }}</a>
+      <a routerLink="/events" class="cursor-pointer">{{ 'header.nav.events' | translate }}</a>
+      <a routerLink="/maps" class="cursor-pointer">{{ 'header.nav.map' | translate }}</a>
+      <a routerLink="/shop" class="cursor-pointer">{{ 'header.nav.shop' | translate }}</a>
+      <a routerLink="/locker" class="cursor-pointer">{{ 'header.nav.locker' | translate }}</a>
     </nav>
 
-    <button type="button" class="md:hidden text-accent" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen()"
-      aria-label="Toggle navigation menu" aria-controls="mobile-nav">
-      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        @if (menuOpen()) {
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        } @else {
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        }
-      </svg>
-    </button>
+    <div class="flex items-center gap-3">
+      <button type="button" (click)="toggleLocale()"
+        class="flex items-center gap-1 text-sm font-bold bg-black/20 hover:bg-black/30 px-2 py-1 rounded-full transition"
+        [attr.aria-label]="(locale() === 'es' ? 'header.switchToEnglish' : 'header.switchToSpanish') | translate">
+        <span class="text-lg leading-none">{{ locale() === 'es' ? '🇪🇸' : '🇬🇧' }}</span>
+        <span class="hidden sm:inline">{{ locale() === 'es' ? 'ES' : 'EN' }}</span>
+      </button>
+
+      <button type="button" class="md:hidden text-accent" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen()"
+        [attr.aria-label]="'header.toggleMenu' | translate" aria-controls="mobile-nav">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          @if (menuOpen()) {
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          } @else {
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          }
+        </svg>
+      </button>
+    </div>
   </div>
 
   @if (menuOpen()) {
   <nav id="mobile-nav" class="md:hidden flex flex-col items-center gap-4 pb-6 text-lg text-accent font-bold">
-    <a routerLink="/news" (click)="closeMenu()" class="cursor-pointer">News</a>
-    <a routerLink="/events" (click)="closeMenu()" class="cursor-pointer">Events</a>
-    <a routerLink="/maps" (click)="closeMenu()" class="cursor-pointer">Map</a>
-    <a routerLink="/shop" (click)="closeMenu()" class="cursor-pointer">Shop</a>
-    <a routerLink="/locker" (click)="closeMenu()" class="cursor-pointer">Locker</a>
+    <a routerLink="/news" (click)="closeMenu()" class="cursor-pointer">{{ 'header.nav.news' | translate }}</a>
+    <a routerLink="/events" (click)="closeMenu()" class="cursor-pointer">{{ 'header.nav.events' | translate }}</a>
+    <a routerLink="/maps" (click)="closeMenu()" class="cursor-pointer">{{ 'header.nav.map' | translate }}</a>
+    <a routerLink="/shop" (click)="closeMenu()" class="cursor-pointer">{{ 'header.nav.shop' | translate }}</a>
+    <a routerLink="/locker" (click)="closeMenu()" class="cursor-pointer">{{ 'header.nav.locker' | translate }}</a>
   </nav>
   }
 </header>

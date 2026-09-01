@@ -31,15 +31,13 @@ export interface CompetitiveMode {
 
 const NO_BUILD_TAG = 'Athena.Playlist.NoBuildingMaterials';
 
-const TEAM_SIZE_NAMES: Record<number, string> = {
-  1: 'Solo',
-  2: 'Duo',
-  3: 'Trio',
-  4: 'Squad',
+const TEAM_SIZE_NAMES: Record<'en' | 'es', Record<number, string>> = {
+  en: { 1: 'Solo', 2: 'Duo', 3: 'Trio', 4: 'Squad' },
+  es: { 1: 'Individual', 2: 'Dúo', 3: 'Trío', 4: 'Escuadra' },
 };
 
-function teamSizeLabelFromCount(count: number): string {
-  return TEAM_SIZE_NAMES[count] ?? `${count}-player teams`;
+function teamSizeLabelFromCount(count: number, lang: 'en' | 'es'): string {
+  return TEAM_SIZE_NAMES[lang][count] ?? `${count}-player teams`;
 }
 
 /**
@@ -48,8 +46,13 @@ function teamSizeLabelFromCount(count: number): string {
  * same mode). We only care about the tournament/LTM ones, grouped by display
  * name, newest first - this is what stands in for "current events" now that
  * fortniteapi.io (the old source of scheduled competitive events) has shut down.
+ *
+ * `lang` only affects the synthesized team-size fallback label (used when a
+ * playlist variant has no subName) - everything else read off `playlists` is
+ * already in the requested language, since the caller fetched them with
+ * ?language={lang}.
  */
-export function buildCompetitiveModes(playlists: RawPlaylist[]): CompetitiveMode[] {
+export function buildCompetitiveModes(playlists: RawPlaylist[], lang: 'en' | 'es' = 'en'): CompetitiveMode[] {
   const relevant = playlists.filter(
     (p) => (p.isTournament || p.isLimitedTimeMode) && !p.name.startsWith('[PH]')
   );
@@ -66,7 +69,7 @@ export function buildCompetitiveModes(playlists: RawPlaylist[]): CompetitiveMode
     const teamSizes = Array.from(new Set(variants.map((v) => v.subName).filter((s): s is string => !!s)));
     const teamSizeLabel = teamSizes.length
       ? teamSizes.join(' · ')
-      : teamSizeLabelFromCount(latest.maxTeamSize ?? 1);
+      : teamSizeLabelFromCount(latest.maxTeamSize ?? 1, lang);
 
     return {
       id: latest.id,

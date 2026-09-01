@@ -1,23 +1,23 @@
 <section class="py-12">
-  <h2 class="text-4xl font-extrabold mb-2 text-center text-yellow-400">🏆 Competitive Modes</h2>
+  <h2 class="text-4xl font-extrabold mb-2 text-center text-yellow-400">{{ 'events.title' | translate }}</h2>
   <p class="text-center text-gray-300 mb-10 max-w-2xl mx-auto">
-    Tournament and limited-time competitive playlists currently live in Fortnite, newest first.
+    {{ 'events.subtitle' | translate }}
   </p>
 
   <div class="max-w-3xl mx-auto mb-12 bg-secondary rounded-2xl shadow-lg p-6 text-white">
-    <h3 class="text-xl font-bold text-accent mb-4">🔍 Check your Battle Royale stats</h3>
+    <h3 class="text-xl font-bold text-accent mb-4">{{ 'events.statsTitle' | translate }}</h3>
     <form (submit)="searchStats($event, nameInput.value)" class="flex gap-3 mb-4">
-      <input #nameInput type="text" placeholder="Epic username" autocomplete="off"
+      <input #nameInput type="text" [placeholder]="'events.statsPlaceholder' | translate" autocomplete="off"
         class="flex-1 rounded-lg px-4 py-2 bg-white/10 text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-accent" />
       <button type="submit"
         class="bg-accent text-black font-bold px-5 py-2 rounded-lg hover:brightness-110 transition disabled:opacity-50"
         [disabled]="statsLoading()">
-        Search
+        {{ 'events.statsSearch' | translate }}
       </button>
     </form>
 
     @if (statsLoading()) {
-    <p class="text-gray-300">Searching…</p>
+    <p class="text-gray-300">{{ 'events.statsSearching' | translate }}</p>
     }
     @if (statsError()) {
     <p class="text-red-300">⚠️ {{ statsError() }}</p>
@@ -26,24 +26,24 @@
     <div>
       <div class="flex items-center justify-between mb-4">
         <h4 class="text-lg font-bold">{{ stats.account.name }}</h4>
-        <span class="text-sm text-gray-300">Battle Pass Lv. {{ stats.battlePass.level }}</span>
+        <span class="text-sm text-gray-300">{{ 'events.battlePassLevel' | translate }} {{ stats.battlePass.level }}</span>
       </div>
       <div class="overflow-x-auto">
         <table class="w-full text-sm text-left">
           <thead>
             <tr class="text-gray-300 border-b border-white/10">
-              <th class="py-2 pr-4">Mode</th>
-              <th class="py-2 pr-4">Wins</th>
-              <th class="py-2 pr-4">Matches</th>
-              <th class="py-2 pr-4">Win Rate</th>
-              <th class="py-2 pr-4">K/D</th>
-              <th class="py-2 pr-4">Kills</th>
+              <th class="py-2 pr-4">{{ 'events.tableMode' | translate }}</th>
+              <th class="py-2 pr-4">{{ 'events.tableWins' | translate }}</th>
+              <th class="py-2 pr-4">{{ 'events.tableMatches' | translate }}</th>
+              <th class="py-2 pr-4">{{ 'events.tableWinRate' | translate }}</th>
+              <th class="py-2 pr-4">{{ 'events.tableKd' | translate }}</th>
+              <th class="py-2 pr-4">{{ 'events.tableKills' | translate }}</th>
             </tr>
           </thead>
           <tbody>
-            @for (row of statsRows(); track row.label) {
+            @for (row of statsRows(); track row.labelKey) {
             <tr class="border-t border-white/5">
-              <td class="py-2 pr-4 font-semibold text-accent">{{ row.label }}</td>
+              <td class="py-2 pr-4 font-semibold text-accent">{{ row.labelKey | translate }}</td>
               <td class="py-2 pr-4">{{ row.data.wins }}</td>
               <td class="py-2 pr-4">{{ row.data.matches }}</td>
               <td class="py-2 pr-4">{{ row.data.winRate | number:'1.1-1' }}%</td>
@@ -60,7 +60,7 @@
 
   @if (error()) {
   <div class="w-full shadow-lg rounded-2xl p-12 text-center bg-secondary text-white mb-6">
-    <p class="text-2xl font-bold text-accent mb-2">⚠️ Competitive modes unavailable</p>
+    <p class="text-2xl font-bold text-accent mb-2">{{ 'events.unavailableTitle' | translate }}</p>
     <p class="text-gray-400">{{ error() }}</p>
   </div>
   }
@@ -87,13 +87,13 @@
       <div class="p-5 flex flex-col flex-1">
         <div class="flex items-center gap-2 mb-2 flex-wrap">
           @if (mode.isTournament) {
-          <span class="text-xs font-bold uppercase tracking-wide bg-accent text-black px-2 py-1 rounded-full">Tournament</span>
+          <span class="text-xs font-bold uppercase tracking-wide bg-accent text-black px-2 py-1 rounded-full">{{ 'events.badgeTournament' | translate }}</span>
           }
           @if (mode.isLimitedTimeMode) {
           <span class="text-xs font-bold uppercase tracking-wide bg-fourth text-black px-2 py-1 rounded-full">LTM</span>
           }
           <span class="text-xs font-bold uppercase tracking-wide border border-white/20 px-2 py-1 rounded-full">
-            {{ mode.noBuild ? 'No Build' : 'Build' }}
+            {{ (mode.noBuild ? 'events.badgeNoBuild' : 'events.badgeBuild') | translate }}
           </span>
           <span class="text-xs uppercase tracking-wide text-gray-300">{{ mode.gameType }}</span>
         </div>
@@ -105,18 +105,18 @@
           <div class="flex items-center justify-between">
             <span>{{ mode.teamSizeLabel }}</span>
             @if (mode.maxPlayers) {
-            <span>Up to {{ mode.maxPlayers }} players</span>
+            <span>{{ 'events.upTo' | translate }} {{ mode.maxPlayers }} {{ 'events.players' | translate }}</span>
             }
           </div>
-          <div class="text-right">Updated {{ mode.addedAt | date:"d MMM y" }}</div>
+          <div class="text-right">{{ 'events.updated' | translate }} {{ mode.addedAt | date:'d MMM y':undefined:(locale() === 'es' ? 'es' : 'en-US') }}</div>
         </div>
       </div>
     </div>
     } @empty {
     @if (!error()) {
     <div class="col-span-full w-full shadow-lg rounded-2xl p-12 text-center bg-secondary text-white">
-      <p class="text-2xl font-bold text-accent mb-2">No competitive modes available</p>
-      <p class="text-gray-400">There are no tournament or limited-time modes live right now.</p>
+      <p class="text-2xl font-bold text-accent mb-2">{{ 'events.emptyTitle' | translate }}</p>
+      <p class="text-gray-400">{{ 'events.emptyBody' | translate }}</p>
     </div>
     }
     }

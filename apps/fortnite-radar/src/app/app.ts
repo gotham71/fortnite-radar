@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { Header } from '@fortnite-radar/ui';
+import { Header, TranslatePipe } from '@fortnite-radar/ui';
 
 
 @Component({
@@ -8,7 +8,7 @@ import { Header } from '@fortnite-radar/ui';
   templateUrl: './app.html',
   styleUrls: ['./app.scss'],
   standalone: true,
-  imports: [Header, RouterModule]
+  imports: [Header, RouterModule, TranslatePipe]
 })
 export class App {
   protected title = 'fortnite-radar';

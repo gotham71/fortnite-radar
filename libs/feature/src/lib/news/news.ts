@@ -1,16 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, OnInit } from '@angular/core';
-import { NewsStoreService } from '@fortnite-radar/store';
+import { Component, computed, effect, inject } from '@angular/core';
+import { LocaleService, NewsStoreService } from '@fortnite-radar/store';
+import { TranslatePipe } from '@fortnite-radar/ui';
 
 @Component({
   selector: 'lib-news',
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './news.html',
   styleUrl: './news.scss',
   standalone: true
 })
-export class News implements OnInit {
+export class News {
   private newsStore = inject(NewsStoreService);
+  private localeService = inject(LocaleService);
   private readonly allMotds = this.newsStore.motds;
 
   readonly hitNew = computed(() => this.allMotds()[0]);
@@ -18,7 +20,10 @@ export class News implements OnInit {
   readonly loading = this.newsStore.loading;
   readonly error = this.newsStore.error;
 
-  ngOnInit() {
-    this.newsStore.getNewsList();
+  constructor() {
+    effect(() => {
+      this.localeService.locale();
+      this.newsStore.getNewsList();
+    });
   }
 }

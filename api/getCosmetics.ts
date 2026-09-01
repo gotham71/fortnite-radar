@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { fetchPublicFortniteApi, FortniteApiError } from './_lib/fortniteApiClient';
+import { resolveLocale } from './_lib/locale';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { name } = req.query;
@@ -8,8 +9,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
+    const lang = resolveLocale(req.query.lang);
     const data = await fetchPublicFortniteApi(
-      `/v2/cosmetics/br/search/all?name=${encodeURIComponent(name)}&matchMethod=contains`
+      `/v2/cosmetics/br/search/all?name=${encodeURIComponent(name)}&matchMethod=contains&language=${lang}`
     );
     res.status(200).json(data);
   } catch (error) {

@@ -1,10 +1,14 @@
 import { HttpClient } from "@angular/common/http";
 import { computed, inject, Injectable, signal } from "@angular/core";
 import { FortniteNewsResponse, Motd } from "@fortnite-radar/models";
+import { LocaleService } from "./locale.service";
+import { TranslateService } from "./translate.service";
 
 @Injectable({ providedIn: 'root' })
 export class NewsStoreService {
   private http = inject(HttpClient);
+  private localeService = inject(LocaleService);
+  private translateService = inject(TranslateService);
   private readonly _news = signal<FortniteNewsResponse | null>(null);
   private readonly _error = signal<string | null>(null);
 
@@ -19,7 +23,8 @@ export class NewsStoreService {
 
   getNewsList() {
     this._error.set(null);
-    this.http.get<FortniteNewsResponse>(`/api/getNews`)
+    this._news.set(null);
+    this.http.get<FortniteNewsResponse>(`/api/getNews?lang=${this.localeService.locale()}`)
       .subscribe({
         next: (response) => {
           this._news.set(response);
@@ -27,7 +32,7 @@ export class NewsStoreService {
         error: (error) => {
           console.error('Failed to load news:', error);
           this._news.set(null);
-          this._error.set('News are currently unavailable. Please try again later.');
+          this._error.set(this.translateService.translate('news.error'));
         }
       });
   }

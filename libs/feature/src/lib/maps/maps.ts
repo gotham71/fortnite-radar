@@ -1,17 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
-import { MapsService } from '@fortnite-radar/store';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import { LocaleService, MapsService } from '@fortnite-radar/store';
+import { TranslatePipe } from '@fortnite-radar/ui';
 
 @Component({
   selector: 'lib-maps',
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './maps.html',
   styleUrl: './maps.scss',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Maps implements OnInit {
+export class Maps {
   private mapsService = inject(MapsService);
+  private localeService = inject(LocaleService);
 
   readonly images = this.mapsService.images;
   readonly pois = this.mapsService.pois;
@@ -33,8 +35,11 @@ export class Maps implements OnInit {
     return this.pois().filter((poi) => poi.name.toLowerCase().includes(query));
   });
 
-  ngOnInit(): void {
-    this.mapsService.loadMap();
+  constructor() {
+    effect(() => {
+      this.localeService.locale();
+      this.mapsService.loadMap();
+    });
   }
 
   toggleLabels() {

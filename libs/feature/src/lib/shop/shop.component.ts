@@ -1,21 +1,25 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, HostListener, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, HostListener, inject, signal } from '@angular/core';
 import { ShopEntry } from '@fortnite-radar/models';
-import { ShopStoreService } from '@fortnite-radar/store';
+import { LocaleService, ShopStoreService, TranslateService } from '@fortnite-radar/store';
+import { TranslatePipe } from '@fortnite-radar/ui';
 
 @Component({
   selector: 'lib-shop',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './shop.html',
   styleUrl: './shop.scss',
 })
-export class Shop implements OnInit {
+export class Shop {
   private shopStore = inject(ShopStoreService);
+  private localeService = inject(LocaleService);
+  private translateService = inject(TranslateService);
   readonly entries = this.shopStore.entries;
   readonly vbuckIcon = computed(() => this.shopStore.shop()?.data?.vbuckIcon);
   readonly loading = this.shopStore.loading;
   readonly error = this.shopStore.error;
+  readonly locale = this.localeService.locale;
 
   // Set to track images that failed to load
   private failedImages = signal<Set<string>>(new Set());
@@ -26,7 +30,7 @@ export class Shop implements OnInit {
   readonly sections = computed(() => {
     const groups = new Map<string, ShopEntry[]>();
     for (const entry of this.entries()) {
-      const key = entry.layout?.name || entry.layoutId || 'Other';
+      const key = entry.layout?.name || entry.layoutId || this.translateService.translate('shop.otherSection');
       if (!groups.has(key)) {
         groups.set(key, []);
       }
@@ -35,8 +39,11 @@ export class Shop implements OnInit {
     return Array.from(groups.entries()).map(([name, items]) => ({ name, items }));
   });
 
-  ngOnInit() {
-    this.shopStore.getShop();
+  constructor() {
+    effect(() => {
+      this.localeService.locale();
+      this.shopStore.getShop();
+    });
   }
 
   // Get the best available image URL

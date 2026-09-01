@@ -4,7 +4,7 @@
     @if (mapUrl()) {
     <button type="button" (click)="toggleLabels()"
       class="self-end mb-2 text-xs font-bold uppercase tracking-wide bg-secondary text-accent px-3 py-1.5 rounded-full hover:brightness-110 transition">
-      {{ showLabels() ? 'Hide labels' : 'Show labels' }}
+      {{ (showLabels() ? 'maps.hideLabels' : 'maps.showLabels') | translate }}
     </button>
     <img [src]="mapUrl()" alt="Fortnite Map"
       class="w-full h-auto rounded-xl shadow-lg transition-transform duration-500 hover:scale-105">
@@ -19,7 +19,7 @@
     } @else if (error()) {
     <p class="poi">⚠️ {{ error() }}</p>
     } @else {
-    <p class="poi">No map found</p>
+    <p class="poi">{{ 'maps.notFound' | translate }}</p>
     }
   </div>
 
@@ -28,7 +28,7 @@
     class="relative flex flex-col text-center items-center min-h-96 mt-4 w-full lg:flex-[1] px-6 mb-6">
     <h1 class="poi-title text-fourth text-4xl font-bold mt-8 mb-4">POIs</h1>
     @if (pois().length > 0) {
-    <input type="text" placeholder="Search POIs..." [value]="filterText()"
+    <input type="text" [placeholder]="'maps.searchPlaceholder' | translate" [value]="filterText()"
       (input)="onFilterInput($any($event.target).value)"
       class="w-full max-w-xs mb-4 rounded-lg px-4 py-2 bg-black/20 text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-accent" />
     }
@@ -47,9 +47,9 @@
     <p class="poi">{{ poi.name }}</p>
     }
     } @else if (pois().length > 0) {
-    <p class="poi">No POIs match "{{ filterText() }}"</p>
+    <p class="poi">{{ 'maps.noMatch' | translate }} "{{ filterText() }}"</p>
     } @else {
-    <p class="poi">No POIs found</p>
+    <p class="poi">{{ 'maps.noPois' | translate }}</p>
     }
   </aside>
 </div>
