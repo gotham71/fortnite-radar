@@ -34,10 +34,17 @@ La aplicación Angular estará disponible en `http://localhost:4200` y las llama
 
 ## Variables de Entorno
 
-Ninguna es obligatoria: todos los endpoints usan la API pública y gratuita de
+Casi todos los endpoints usan la API pública y gratuita de
 [fortnite-api.com](https://fortnite-api.com), que no requiere autenticación.
 (El antiguo proveedor `fortniteapi.io`, que sí pedía `FORTNITE_API_KEY`, cerró
 definitivamente en marzo de 2026.)
+
+Solo `/api/getPlayerStats` necesita una clave, gratuita, obtenida en
+[dash.fortnite-api.com](https://dash.fortnite-api.com):
+
+```
+FORTNITE_API_COM_KEY=tu_api_key
+```
 
 ## Endpoints Disponibles
 
@@ -45,3 +52,4 @@ definitivamente en marzo de 2026.)
 - `GET /api/getMapWithPois` - Obtiene el mapa y los puntos de interés
 - `GET /api/getPlaylists` - Obtiene los modos competitivos/torneo y LTM actuales
 - `GET /api/getShop` - Obtiene la tienda diaria
+- `GET /api/getPlayerStats?name=xxx` - Obtiene las estadísticas de un jugador (requiere `FORTNITE_API_COM_KEY`)

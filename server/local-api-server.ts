@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import { join } from 'path';
 import { buildCompetitiveModes, RawPlaylist } from '../api/_lib/competitiveModes';
-import { fetchPublicFortniteApi } from '../api/_lib/fortniteApiClient';
+import { fetchAuthenticatedFortniteApi, fetchPublicFortniteApi, FortniteApiError, MissingApiKeyError } from '../api/_lib/fortniteApiClient';
 
 // Cargar variables de entorno
 const envPath = join(process.cwd(), '.env');
@@ -67,6 +67,27 @@ app.get('/api/getShop', async (req, res) => {
     res.status(200).json(data);
   } catch (error) {
     handleFortniteApiError(res, 'fetch shop', error);
+  }
+});
+
+// GET /api/getPlayerStats
+app.get('/api/getPlayerStats', async (req, res) => {
+  const { name } = req.query;
+  if (!name || typeof name !== 'string') {
+    return res.status(400).json({ error: 'name is required' });
+  }
+
+  try {
+    const data = await fetchAuthenticatedFortniteApi(`/v2/stats/br/v2?name=${encodeURIComponent(name)}`);
+    res.status(200).json(data);
+  } catch (error) {
+    if (error instanceof MissingApiKeyError) {
+      return res.status(500).json({ error: 'Stats service is not configured. Set FORTNITE_API_COM_KEY in .env.' });
+    }
+    if (error instanceof FortniteApiError) {
+      return res.status(error.status).json({ error: error.message });
+    }
+    handleFortniteApiError(res, 'fetch player stats', error);
   }
 });
 
