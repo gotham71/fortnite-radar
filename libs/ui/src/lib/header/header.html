@@ -17,9 +17,9 @@
 
     <div class="flex items-center gap-3">
       <button type="button" (click)="toggleLocale()"
-        class="flex items-center justify-center w-8 h-8 bg-black/20 hover:bg-black/30 rounded-full transition"
+        class="flex items-center justify-center w-8 h-8 bg-black/20 hover:bg-black/30 rounded-full transition overflow-hidden"
         [attr.aria-label]="(locale() === 'es' ? 'header.switchToEnglish' : 'header.switchToSpanish') | translate">
-        <span class="text-lg leading-none">{{ locale() === 'es' ? '🇪🇸' : '🇬🇧' }}</span>
+        <iconify-icon [icon]="locale() === 'es' ? 'circle-flags:es' : 'circle-flags:gb'" width="22" height="22"></iconify-icon>
       </button>
 
       <button type="button" class="md:hidden text-accent" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen()"
