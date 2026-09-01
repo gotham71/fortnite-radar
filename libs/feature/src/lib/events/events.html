@@ -76,11 +76,12 @@
   <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
     @for (mode of modes(); track mode.id) {
     <div class="rounded-2xl overflow-hidden shadow-lg bg-secondary text-white flex flex-col">
-      <div class="h-40 bg-black/20 flex items-center justify-center overflow-hidden">
+      <div class="h-40 flex items-center justify-center overflow-hidden"
+        [ngClass]="mode.image ? 'bg-black/20' : getModeVisual(mode.gameType).containerClass">
         @if (mode.image) {
         <img [src]="mode.image" [alt]="mode.name" class="w-full h-full object-cover" />
         } @else {
-        <span class="text-5xl">🏆</span>
+        <iconify-icon [icon]="getModeVisual(mode.gameType).icon" width="56" height="56" class="text-white/90"></iconify-icon>
         }
       </div>
       <div class="p-5 flex flex-col flex-1">

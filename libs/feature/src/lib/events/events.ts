@@ -1,7 +1,28 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit } from '@angular/core';
 import { PlayerModeStats } from '@fortnite-radar/models';
 import { EventsStoreService, PlayerStatsStoreService } from '@fortnite-radar/store';
+
+interface ModeVisual {
+  icon: string;
+  containerClass: string;
+}
+
+/**
+ * fortnite-api.com's playlists barely ever include artwork (see buildCompetitiveModes),
+ * so each gameType gets a generic, open-source icon (Iconify/MDI, MIT-licensed - no
+ * Fortnite/Epic branding) instead of a broken image or a single repeated placeholder.
+ */
+const GAME_TYPE_VISUALS: Record<string, ModeVisual> = {
+  BRArena: { icon: 'mdi:sword-cross', containerClass: 'bg-gradient-to-br from-amber-500/30 to-black/40' },
+  BlastBerry: { icon: 'mdi:lightning-bolt', containerClass: 'bg-gradient-to-br from-fuchsia-500/30 to-black/40' },
+  ForbiddenFruit: { icon: 'mdi:run-fast', containerClass: 'bg-gradient-to-br from-rose-500/30 to-black/40' },
+  Figment: { icon: 'mdi:account-group', containerClass: 'bg-gradient-to-br from-sky-500/30 to-black/40' },
+  VKPlay: { icon: 'mdi:gamepad-variant', containerClass: 'bg-gradient-to-br from-emerald-500/30 to-black/40' },
+  Delulu: { icon: 'mdi:emoticon-cool-outline', containerClass: 'bg-gradient-to-br from-violet-500/30 to-black/40' },
+};
+
+const DEFAULT_MODE_VISUAL: ModeVisual = { icon: 'mdi:trophy-outline', containerClass: 'bg-gradient-to-br from-yellow-500/20 to-black/40' };
 
 @Component({
   selector: 'lib-events',
@@ -9,6 +30,7 @@ import { EventsStoreService, PlayerStatsStoreService } from '@fortnite-radar/sto
   templateUrl: './events.html',
   styleUrl: './events.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class Events implements OnInit {
   private eventsStore = inject(EventsStoreService);
@@ -42,5 +64,9 @@ export class Events implements OnInit {
   searchStats(event: Event, name: string) {
     event.preventDefault();
     this.statsStore.search(name);
+  }
+
+  getModeVisual(gameType: string): ModeVisual {
+    return GAME_TYPE_VISUALS[gameType] ?? DEFAULT_MODE_VISUAL;
   }
 }
