@@ -4,9 +4,12 @@ export interface RawPlaylist {
   subName?: string;
   description?: string;
   gameType: string;
+  maxPlayers?: number;
+  maxTeamSize?: number;
   isTournament: boolean;
   isLimitedTimeMode: boolean;
   added: string;
+  gameplayTags?: string[];
   images?: {
     showcase?: string;
   };
@@ -17,11 +20,26 @@ export interface CompetitiveMode {
   name: string;
   description?: string;
   gameType: string;
-  teamSizes: string[];
+  teamSizeLabel: string;
+  maxPlayers?: number;
+  noBuild: boolean;
   addedAt: string;
   image?: string;
   isTournament: boolean;
   isLimitedTimeMode: boolean;
+}
+
+const NO_BUILD_TAG = 'Athena.Playlist.NoBuildingMaterials';
+
+const TEAM_SIZE_NAMES: Record<number, string> = {
+  1: 'Solo',
+  2: 'Duo',
+  3: 'Trio',
+  4: 'Squad',
+};
+
+function teamSizeLabelFromCount(count: number): string {
+  return TEAM_SIZE_NAMES[count] ?? `${count}-player teams`;
 }
 
 /**
@@ -46,13 +64,18 @@ export function buildCompetitiveModes(playlists: RawPlaylist[]): CompetitiveMode
   const modes = Array.from(groups.entries()).map(([name, variants]) => {
     const latest = variants.reduce((a, b) => (new Date(a.added) > new Date(b.added) ? a : b));
     const teamSizes = Array.from(new Set(variants.map((v) => v.subName).filter((s): s is string => !!s)));
+    const teamSizeLabel = teamSizes.length
+      ? teamSizes.join(' · ')
+      : teamSizeLabelFromCount(latest.maxTeamSize ?? 1);
 
     return {
       id: latest.id,
       name,
       description: latest.description,
       gameType: latest.gameType.replace('EFortGameType::', ''),
-      teamSizes,
+      teamSizeLabel,
+      maxPlayers: latest.maxPlayers,
+      noBuild: variants.some((v) => v.gameplayTags?.includes(NO_BUILD_TAG)),
       addedAt: latest.added,
       image: latest.images?.showcase,
       isTournament: variants.some((v) => v.isTournament),

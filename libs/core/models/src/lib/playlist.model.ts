@@ -3,7 +3,9 @@ export interface CompetitiveMode {
   name: string;
   description?: string;
   gameType: string;
-  teamSizes: string[];
+  teamSizeLabel: string;
+  maxPlayers?: number;
+  noBuild: boolean;
   addedAt: string;
   image?: string;
   isTournament: boolean;
