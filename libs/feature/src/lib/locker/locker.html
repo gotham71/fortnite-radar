@@ -33,7 +33,8 @@
   @if (!loading() && !error()) {
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
     @for (item of results(); track item.id) {
-    <div class="rounded-xl overflow-hidden bg-secondary shadow-lg transition-transform duration-300 hover:scale-105"
+    <button type="button" (click)="openDetail(item)"
+      class="text-left rounded-xl overflow-hidden bg-secondary shadow-lg transition-transform duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent"
       [ngClass]="'rarity-' + item.rarity.value">
       <div class="aspect-square bg-black/20 flex items-center justify-center overflow-hidden">
         @if (item.images.icon || item.images.smallIcon) {
@@ -49,7 +50,7 @@
         <p class="text-xs text-gray-400 truncate">{{ item.introduction.text }}</p>
         }
       </div>
-    </div>
+    </button>
     } @empty {
     @if (searched()) {
     <div class="col-span-full w-full shadow-lg rounded-2xl p-12 text-center bg-secondary text-white">
@@ -66,3 +67,85 @@
   </div>
   }
 </section>
+
+@if (selectedItem(); as item) {
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+  <button type="button" class="absolute inset-0 bg-black/70 cursor-default" (click)="closeDetail()" aria-label="Close dialog"></button>
+
+  <div class="relative bg-secondary text-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+    [ngClass]="'rarity-' + item.rarity.value" role="dialog" aria-modal="true" [attr.aria-label]="item.name">
+    <button type="button"
+      class="absolute top-3 right-3 z-10 text-white/70 hover:text-white bg-black/40 rounded-full w-9 h-9 flex items-center justify-center"
+      (click)="closeDetail()" aria-label="Close">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <div class="aspect-video bg-black/30 flex items-center justify-center overflow-hidden">
+      @if (item.images.featured || item.images.icon) {
+      <img [src]="item.images.featured || item.images.icon" [alt]="item.name" class="w-full h-full object-contain" />
+      } @else {
+      <span class="text-6xl opacity-50">❔</span>
+      }
+    </div>
+
+    <div class="p-6">
+      <div class="flex items-center gap-2 mb-2 flex-wrap">
+        <span class="text-xs font-bold uppercase tracking-wide bg-accent text-black px-2 py-1 rounded-full">{{ item.rarity.displayValue }}</span>
+        <span class="text-xs uppercase tracking-wide text-gray-300">{{ item.type.displayValue }}</span>
+      </div>
+      <h3 class="text-2xl font-bold text-accent mb-2">{{ item.name }}</h3>
+      @if (item.description) {
+      <p class="text-sm text-gray-200 mb-4">{{ item.description }}</p>
+      }
+
+      <dl class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm mb-4">
+        @if (item.set) {
+        <div>
+          <dt class="text-gray-400 text-xs uppercase">Set</dt>
+          <dd>{{ item.set.value }}</dd>
+        </div>
+        }
+        @if (item.introduction) {
+        <div>
+          <dt class="text-gray-400 text-xs uppercase">Introduced</dt>
+          <dd>{{ item.introduction.text }}</dd>
+        </div>
+        }
+        @if (item.added) {
+        <div>
+          <dt class="text-gray-400 text-xs uppercase">Added</dt>
+          <dd>{{ item.added | date:"d MMM y" }}</dd>
+        </div>
+        }
+      </dl>
+
+      @if (item.showcaseVideo) {
+      <div class="aspect-video rounded-xl overflow-hidden mb-4">
+        <iframe class="w-full h-full" [src]="getSafeVideoUrl(item.showcaseVideo)" title="Showcase video"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
+      </div>
+      }
+
+      @if (item.images.lego?.large || item.images.bean?.large) {
+      <div class="flex gap-4 flex-wrap">
+        @if (item.images.lego?.large; as legoImg) {
+        <div class="text-center">
+          <img [src]="legoImg" alt="LEGO style" class="w-24 h-24 object-contain bg-black/20 rounded-lg" />
+          <p class="text-xs text-gray-400 mt-1">LEGO</p>
+        </div>
+        }
+        @if (item.images.bean?.large; as beanImg) {
+        <div class="text-center">
+          <img [src]="beanImg" alt="Bean style" class="w-24 h-24 object-contain bg-black/20 rounded-lg" />
+          <p class="text-xs text-gray-400 mt-1">Bean</p>
+        </div>
+        }
+      </div>
+      }
+    </div>
+  </div>
+</div>
+}

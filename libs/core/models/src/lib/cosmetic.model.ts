@@ -23,7 +23,18 @@ export interface Cosmetic {
     smallIcon?: string;
     icon?: string;
     featured?: string;
+    lego?: {
+      small?: string;
+      large?: string;
+      wide?: string;
+    };
+    bean?: {
+      small?: string;
+      large?: string;
+    };
   };
+  showcaseVideo?: string;
+  added?: string;
 }
 
 export interface CosmeticsSearchResponse {
