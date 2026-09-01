@@ -28,6 +28,16 @@ export interface ShopEntry {
   newDisplayAsset?: ShopDisplayAsset;
   brItems?: ShopItem[];
   tracks?: ShopTrack[];
+  bundle?: {
+    name: string;
+    info: string;
+    image: string;
+  };
+  banner?: {
+    value: string;
+    intensity: string;
+    backendValue: string;
+  };
   colors?: {
       color1?: string;
       color2?: string;
@@ -68,7 +78,7 @@ export interface ShopLayout {
 export interface ShopDisplayAsset {
   id: string;
   cosmeticId?: string;
-  materialInstances: any[];
+  materialInstances: unknown[];
   renderImages: ShopRenderImage[];
 }
 
@@ -115,6 +125,6 @@ export interface ShopItem {
     featured?: string;
     other?: Record<string, string>;
   };
-  variants?: any[];
+  variants?: unknown[];
   added: string;
 }
