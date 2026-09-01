@@ -1,0 +1,26 @@
+// Rarity Colors - Bottom Borders & Glows
+@mixin rarity-style($color) {
+    border-bottom: 4px solid $color;
+    box-shadow: 0 4px 15px rgba($color, 0.1);
+
+    &:hover {
+        box-shadow: 0 8px 25px rgba($color, 0.2);
+    }
+}
+
+.rarity-common { @include rarity-style(#b1b1b1); }
+.rarity-uncommon { @include rarity-style(#60aa3a); }
+.rarity-rare { @include rarity-style(#49acf2); }
+.rarity-epic { @include rarity-style(#b15be2); }
+.rarity-legendary { @include rarity-style(#d37841); }
+.rarity-mythic { @include rarity-style(#e4b031); }
+.rarity-icon { @include rarity-style(#36d2d3); }
+.rarity-frozen { @include rarity-style(#99e5ff); }
+.rarity-lava { @include rarity-style(#ea3323); }
+.rarity-dark { @include rarity-style(#fb22d7); }
+.rarity-starwars { @include rarity-style(#e3e3e3); }
+.rarity-marvel { @include rarity-style(#ed1d24); }
+.rarity-dc { @include rarity-style(#0277bd); }
+.rarity-gaminglegends { @include rarity-style(#5451e0); }
+.rarity-shadow { @include rarity-style(#4a4a4a); }
+.rarity-slurp { @include rarity-style(#13ec8c); }

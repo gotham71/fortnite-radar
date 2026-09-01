@@ -1,15 +1,4 @@
-import fetch from 'node-fetch';
-
-/**
- * Calls the public, unauthenticated fortnite-api.com backend (news, shop, map, playlists).
- */
-export async function fetchPublicFortniteApi<T = unknown>(path: string): Promise<T> {
-  const response = await fetch(`https://fortnite-api.com${path}`);
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-  return response.json() as Promise<T>;
-}
+import fetch, { Response } from 'node-fetch';
 
 export class MissingApiKeyError extends Error {
   constructor() {
@@ -21,6 +10,22 @@ export class FortniteApiError extends Error {
   constructor(public readonly status: number, message: string) {
     super(message);
   }
+}
+
+async function parseOrThrow<T>(response: Response): Promise<T> {
+  if (!response.ok) {
+    const body = (await response.json().catch(() => null)) as { error?: string } | null;
+    throw new FortniteApiError(response.status, body?.error ?? `HTTP error! status: ${response.status}`);
+  }
+  return response.json() as Promise<T>;
+}
+
+/**
+ * Calls the public, unauthenticated fortnite-api.com backend (news, shop, map, playlists, cosmetics).
+ */
+export async function fetchPublicFortniteApi<T = unknown>(path: string): Promise<T> {
+  const response = await fetch(`https://fortnite-api.com${path}`);
+  return parseOrThrow<T>(response);
 }
 
 /**
@@ -36,9 +41,5 @@ export async function fetchAuthenticatedFortniteApi<T = unknown>(path: string): 
   const response = await fetch(`https://fortnite-api.com${path}`, {
     headers: { Authorization: apiKey },
   });
-  if (!response.ok) {
-    const body = (await response.json().catch(() => null)) as { error?: string } | null;
-    throw new FortniteApiError(response.status, body?.error ?? `HTTP error! status: ${response.status}`);
-  }
-  return response.json() as Promise<T>;
+  return parseOrThrow<T>(response);
 }

@@ -1,0 +1,68 @@
+<section class="py-12">
+  <h2 class="text-4xl font-extrabold mb-2 text-center text-yellow-400">🎒 Locker</h2>
+  <p class="text-center text-gray-300 mb-10 max-w-2xl mx-auto">
+    Search any Fortnite skin, back bling, pickaxe or emote by name.
+  </p>
+
+  <form (submit)="search($event, nameInput.value)" class="flex gap-3 max-w-xl mx-auto mb-10">
+    <input #nameInput type="text" placeholder="e.g. Peely, Renegade Raider..." autocomplete="off"
+      class="flex-1 rounded-lg px-4 py-2 bg-secondary text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-accent" />
+    <button type="submit"
+      class="bg-accent text-black font-bold px-5 py-2 rounded-lg hover:brightness-110 transition disabled:opacity-50"
+      [disabled]="loading()">
+      Search
+    </button>
+  </form>
+
+  @if (loading()) {
+  <div class="flex justify-center py-20">
+    <svg class="animate-spin h-16 w-16 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+    </svg>
+  </div>
+  }
+
+  @if (error()) {
+  <div class="w-full shadow-lg rounded-2xl p-12 text-center bg-secondary text-white mb-6">
+    <p class="text-2xl font-bold text-accent mb-2">⚠️ Locker search unavailable</p>
+    <p class="text-gray-400">{{ error() }}</p>
+  </div>
+  }
+
+  @if (!loading() && !error()) {
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+    @for (item of results(); track item.id) {
+    <div class="rounded-xl overflow-hidden bg-secondary shadow-lg transition-transform duration-300 hover:scale-105"
+      [ngClass]="'rarity-' + item.rarity.value">
+      <div class="aspect-square bg-black/20 flex items-center justify-center overflow-hidden">
+        @if (item.images.icon || item.images.smallIcon) {
+        <img [src]="item.images.icon || item.images.smallIcon" [alt]="item.name" class="w-full h-full object-cover" />
+        } @else {
+        <span class="text-4xl opacity-50">❔</span>
+        }
+      </div>
+      <div class="p-3">
+        <h3 class="text-sm font-bold text-white truncate">{{ item.name }}</h3>
+        <p class="text-xs text-gray-300 truncate">{{ item.type.displayValue }} · {{ item.rarity.displayValue }}</p>
+        @if (item.introduction) {
+        <p class="text-xs text-gray-400 truncate">{{ item.introduction.text }}</p>
+        }
+      </div>
+    </div>
+    } @empty {
+    @if (searched()) {
+    <div class="col-span-full w-full shadow-lg rounded-2xl p-12 text-center bg-secondary text-white">
+      <p class="text-2xl font-bold text-accent mb-2">No results</p>
+      <p class="text-gray-400">Try a different name.</p>
+    </div>
+    } @else {
+    <div class="col-span-full w-full shadow-lg rounded-2xl p-12 text-center bg-secondary text-white">
+      <p class="text-2xl font-bold text-accent mb-2">Search the Locker</p>
+      <p class="text-gray-400">Type a cosmetic name above to get started.</p>
+    </div>
+    }
+    }
+  </div>
+  }
+</section>

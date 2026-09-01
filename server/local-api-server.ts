@@ -91,6 +91,26 @@ app.get('/api/getPlayerStats', async (req, res) => {
   }
 });
 
+// GET /api/getCosmetics
+app.get('/api/getCosmetics', async (req, res) => {
+  const { name } = req.query;
+  if (!name || typeof name !== 'string') {
+    return res.status(400).json({ error: 'name is required' });
+  }
+
+  try {
+    const data = await fetchPublicFortniteApi(
+      `/v2/cosmetics/br/search/all?name=${encodeURIComponent(name)}&matchMethod=contains`
+    );
+    res.status(200).json(data);
+  } catch (error) {
+    if (error instanceof FortniteApiError) {
+      return res.status(error.status).json({ error: error.message });
+    }
+    handleFortniteApiError(res, 'fetch cosmetics', error);
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 Servidor API local ejecutándose en http://localhost:${PORT}`);
 });

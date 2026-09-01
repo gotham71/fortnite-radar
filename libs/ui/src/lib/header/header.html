@@ -12,6 +12,7 @@
       <a routerLink="/events" class="cursor-pointer">Events</a>
       <a routerLink="/maps" class="cursor-pointer">Map</a>
       <a routerLink="/shop" class="cursor-pointer">Shop</a>
+      <a routerLink="/locker" class="cursor-pointer">Locker</a>
     </nav>
 
     <button type="button" class="md:hidden text-accent" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen()"
@@ -32,6 +33,7 @@
     <a routerLink="/events" (click)="closeMenu()" class="cursor-pointer">Events</a>
     <a routerLink="/maps" (click)="closeMenu()" class="cursor-pointer">Map</a>
     <a routerLink="/shop" (click)="closeMenu()" class="cursor-pointer">Shop</a>
+    <a routerLink="/locker" (click)="closeMenu()" class="cursor-pointer">Locker</a>
   </nav>
   }
 </header>

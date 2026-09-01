@@ -6,4 +6,5 @@ export const appRoutes: Route[] = [
   {path: 'events', title: 'Competitive Modes · Fortnite Radar', loadComponent: () => import('@fortnite-radar/news').then(m => m.Events)},
   {path: 'maps', title: 'Map · Fortnite Radar', loadComponent: () => import('@fortnite-radar/news').then(m => m.Maps)},
   {path: 'shop', title: 'Shop · Fortnite Radar', loadComponent: () => import('@fortnite-radar/news').then(m => m.Shop)},
+  {path: 'locker', title: 'Locker · Fortnite Radar', loadComponent: () => import('@fortnite-radar/news').then(m => m.Locker)},
 ];

@@ -1,3 +1,4 @@
+export * from './lib/cosmetic.model';
 export * from './lib/maps.model';
 export * from './lib/news.model';
 export * from './lib/playlist.model';
