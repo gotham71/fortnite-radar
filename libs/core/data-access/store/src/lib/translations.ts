@@ -14,7 +14,6 @@ export const TRANSLATIONS = {
     },
     footer: {
       dataProvidedBy: 'Data provided by',
-      notAffiliated: 'Not affiliated with Epic Games.',
     },
     news: {
       unavailableTitle: '⚠️ News unavailable',
@@ -111,7 +110,6 @@ export const TRANSLATIONS = {
     },
     footer: {
       dataProvidedBy: 'Datos proporcionados por',
-      notAffiliated: 'No afiliado con Epic Games.',
     },
     news: {
       unavailableTitle: '⚠️ Noticias no disponibles',
